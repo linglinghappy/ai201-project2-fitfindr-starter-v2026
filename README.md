@@ -41,6 +41,7 @@
 
 <!-- Three or four sentences: what a user asks for, and what they get back. -->
 
+FitFindr helps you shop for secondhand clothes. You describe what you want, like "vintage graphic tee under $30", and it searches 40 thrift listings by keywords, size, and price. It takes the best match and suggests one or two outfits using clothes you already own. It then writes a short caption you could post about the find.
 
 
 ---
@@ -59,24 +60,28 @@
 
 ### `search_listings`
 
-- **What it does:**
-- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->
-- **Returns:**
-- **When it has nothing:**
+- **What it does:**Finds listings that match the user's words. It can also filter by size and price.
+- **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->`description` (str), `size` (str or None), `max_price` (float or None)
+- **Returns:** A list of up to 10 listing dicts, best match first. Each dict has `id`, `title`, `description`, `category`, `style_tags` (list), `size`, `condition`, `price` (float), `colors` (list), `brand` (str or None), and `platform`.
+- **When it has nothing:**An empty list `[]`. Not None. Not an error.
+- **How it matches:** The description is split into lowercase words, and small words like "a", "the", "under" are dropped. Each listing scores one point for every word that appears in its `title`, `description`, or `style_tags`. Listings that score 0 are dropped.
+- **Size match rule:** Sizes are split on "/" and text in brackets is removed. Two sizes match if they share a part. Case does not matter. So "M" matches "S/M", and "XL" matches "XL (oversized)". But "S" does not match "US 9", and "L" does not match "XL". "W30" does not match "W30 L30", and "One Size" does not match other sizes.
+- **Price rule:** `max_price` is inclusive. A $30 item matches `max_price=30`.
 
 ### `suggest_outfit`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Asks the model for one or two outfits. Each outfit pairs the new item with clothes the user already owns.
+- **Inputs:** `new_item` (dict, one listing), `wardrobe` (dict with an `items` key; `items` is a list of wardrobe item dicts, each with `id`, `name`, `category`, `colors`, `style_tags`, and `notes`)
+- **Returns:** A non-empty string with one or two outfit ideas. Each idea names real pieces from the wardrobe.
+- **When it has nothing:** If the wardrobe is empty (`{"items": []}`), it returns general styling tips for the item. It still returns a non-empty string. Never "" and never an error.
+v
 
 ### `create_fit_card`
 
-- **What it does:**
-- **Inputs:**
-- **Returns:**
-- **When it has nothing:**
+- **What it does:** Asks the model to write a short social media caption about the find.
+- **Inputs:** `outfit` (str, the text from `suggest_outfit`), `new_item` (dict, one listing)
+- **Returns:** A caption of 2 to 4 sentences. It names the item, its price, and its platform once each.
+- **When it has nothing:** If `outfit` is empty or only spaces, it returns "No outfit to caption yet." It does not call the model.
 
 ---
 
@@ -94,7 +99,7 @@
      function have to be real. -->
 
 **Branch rule:**
-
+If `search_listings` returns an empty list, put "No listings matched your search." in the session and stop. Otherwise, take the first result and pass it to `suggest_outfit`. Then pass the outfit to `create_fit_card`.
 **Where it lives:** `agent.py::run_agent`
 
 **How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
