@@ -123,19 +123,65 @@ $ python app.py ask '...'
 
 **The three tools, tested one at a time**
 
-```
-$ python -c "from tools import search_listings; print(search_listings('graphic tee', max_price=30))"
+`search_listings` — no model call. Every result is $30 or less.
 
 ```
+$ python -c "from tools import search_listings; [print(l['id'], l['title'], l['price'], l['size']) for l in search_listings('graphic tee', max_price=30)]"
+lst_002 Y2K Baby Tee — Butterfly Print 18.0 S/M
+lst_006 Graphic Tee — 2003 Tour Bootleg Style 24.0 L
+lst_017 Mesh Long-Sleeve Top — Black 15.0 S/M
+lst_033 Vintage Band Tee — Faded Grey 19.0 L
+lst_011 Low-Rise Cargo Pants — Khaki 27.0 W29
+lst_015 Vintage Graphic Hoodie — Faded Black 26.0 L
+
+$ python -c "from tools import search_listings; print(search_listings('designer ballgown', max_price=5))"
+[]
+```
+
+`suggest_outfit` — with the example wardrobe. Every piece it names is in the wardrobe.
 
 ```
-$ python -c "from tools import suggest_outfit; ..."
+$ python -c "from tools import suggest_outfit; from utils.data_loader import get_example_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_example_wardrobe()))"
+**Outfit 1: Casual Streetwear**
+Pair the Vintage Levi's 501 Jeans with the White ribbed tank top and the Chunky white sneakers. Layer on the Vintage black denim jacket and accessorize with the Brown leather belt and the Black crossbody bag. 
 
+**Outfit 2: Relaxed Layers**
+Combine the Vintage Levi's 501 Jeans with the Oversized grey crewneck sweatshirt and the Black combat boots. Cinch the waist with the Brown leather belt and complete the look using the Black crossbody bag.
 ```
 
-```
-$ python -c "from tools import create_fit_card; ..."
+`suggest_outfit` — with an empty wardrobe. It gives general tips, not "" and not an error.
 
+```
+$ python -c "from tools import suggest_outfit; from utils.data_loader import get_empty_wardrobe, load_listings; print(suggest_outfit(load_listings()[0], get_empty_wardrobe()))"
+**Casual Everyday:** Pair the vintage 501s with a classic white crewneck t-shirt and a canvas belt. Layer an unbuttoned flannel shirt or a black zip-up hoodie over top. Finish the look with white canvas sneakers or worn-in leather boots for an effortless, timeless aesthetic. 
+
+**Smart-Casual:** Dress up the medium-wash denim by tucking in a crisp black or navy turtleneck. Add a structured leather belt and a vintage leather jacket. Complete the outfit with minimalist leather loafers or sleek black ankle boots for a sharp, elevated contrast.
+```
+
+`create_fit_card` — run three times with the cache on. All three are word-for-word the same, because the cache returned the first answer.
+
+```
+$ python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
+Nothing beats the effortless, off-duty model vibe of a properly broken-in medium wash. Paired these vintage Levi's 501 jeans with my go-to white sneakers for that ultimate 90s casual look. Grabbed them for just $38 and they are officially live on my Depop shop—run, don't walk!
+
+$ python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
+Nothing beats the effortless, off-duty model vibe of a properly broken-in medium wash. Paired these vintage Levi's 501 jeans with my go-to white sneakers for that ultimate 90s casual look. Grabbed them for just $38 and they are officially live on my Depop shop—run, don't walk!
+
+$ python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
+Nothing beats the effortless, off-duty model vibe of a properly broken-in medium wash. Paired these vintage Levi's 501 jeans with my go-to white sneakers for that ultimate 90s casual look. Grabbed them for just $38 and they are officially live on my Depop shop—run, don't walk!
+```
+
+`create_fit_card` — run three times with the cache off. All three are different. `TEMPERATURE` is 0.9, so the identical runs above came from `CACHE_ENABLED`, not temperature.
+
+```
+$ AI201_CACHE=0 python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
+Nothing beats the effortless 90s off-duty model vibe of a properly broken-in medium wash. Paired these vintage Levi's 501 jeans with my go-to white sneakers and honestly, I never want to take them off. Snagged them for just $38 over on my Depop—run, don't walk!
+
+$ AI201_CACHE=0 python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
+Nothing beats the effortless 90s off-duty model vibe of a perfectly worn-in pair of vintage Levi's 501 jeans. Just paired them with my go-to white sneakers for that ultimate effortless look that goes with literally everything. Grab these medium wash staples over on my depop right now for just $38!
+
+$ AI201_CACHE=0 python -c "from tools import create_fit_card; from utils.data_loader import load_listings; print(create_fit_card('jeans and white sneakers', load_listings()[0]))"
+Nothing beats the way broken-in denim hugs you just right. These vintage Levi's 501 jeans in a classic medium wash give off major effortless off-duty model energy when paired with crisp white sneakers. Snagged them for just $38—run, don't walk, over to my Depop before I change my mind and keep them for myself!
 ```
 
 ---
