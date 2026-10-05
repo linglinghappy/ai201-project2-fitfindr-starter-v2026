@@ -101,9 +101,13 @@ FitFindr helps you shop for secondhand clothes. You describe what you want, like
 
 **Where it lives:** `agent.py::run_agent`
 
-**How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
+**How the query is parsed:** Regex, in `agent.py::parse_query`. It looks for a price like "under $30" and a size like "size M" or ", M" at the end. Whatever is left becomes the description. It does not use the model. Limit: it misses prices written in words, like "under thirty dollars".
 
-**What moves through the session:** <!-- which fields, in what order -->
+**What moves through the session:** `query` → `parsed` (description, size, max_price) → `search_results` → `selected_item` (the first result) → `outfit_suggestion` → `fit_card`. If the search is empty, the run stops and only `error` is filled in after `search_results`.
+<!-- regex, string splitting, or asking the model — say which -->
+
+
+**What moves through the session:** `query` → `parsed` (description, size, max_price) → `search_results` → `selected_item` (the first result) → `outfit_suggestion` → `fit_card`. If the search is empty, the run stops and only `error` is filled in after `search_results`.<!-- which fields, in what order -->
 
 ---
 
@@ -230,15 +234,16 @@ Nothing beats the way broken-in denim hugs you just right. These vintage Levi's 
 
 **Moment 1**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I gave Claude the `_size_tokens` helper I wrote in class and asked it to add it to `tools.py`.
+- *What came back:* It pointed out a bug. I wrote `p.strip().upper` without `()`. That returns the method, not the uppercase text. So the size filter would never match anything.
+- *What I changed:* I changed it to `p.strip().upper()`. Then I tested it. `"S/M (fits like M)"` gave `{"S", "M"}`, and `None` gave an empty set.
+
 
 **Moment 2**
 
-- *What I asked for:*
-- *What came back:*
-- *What I changed:*
+- *What I asked for:* I asked Claude to write `suggest_outfit`. I wanted it to use only clothes from the user's wardrobe.
+- *What came back:* The prompt told the model to name each piece exactly as it is written in the wardrobe list.
+- *What I changed:* I did not trust it right away. I checked all 7 pieces the model named against the example wardrobe. All 7 were real, with exact names. I kept the prompt and added the test to my Sample Run.
 
 <!-- ═══════════════════════ UNIT 4 — THE TEST ═══════════════════════
 
