@@ -153,7 +153,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         )
 
         # ── THE BRANCH ────────────────────────────────────────────────────────
-        if not results:
+        if not session["search_results"]:
             session["error"] = _nothing_found_message(parsed)
             trace.step(
                 "branch",
@@ -163,7 +163,7 @@ def run_agent(query: str, wardrobe: dict) -> dict:
 
         steps += 1
         trace.check_iterations(steps)
-        session["selected_item"] = results[0]
+        session["selected_item"] = session["search_results"][0]
         trace.step("select_item", returned=session["selected_item"])
 
         steps += 1
