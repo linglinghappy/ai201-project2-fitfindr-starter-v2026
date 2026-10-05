@@ -60,10 +60,10 @@ FitFindr helps you shop for secondhand clothes. You describe what you want, like
 
 ### `search_listings`
 
-- **What it does:**Finds listings that match the user's words. It can also filter by size and price.
+- **What it does:** Finds listings that match the user's words. It can also filter by size and price.
 - **Inputs:** <!-- name and type each: `max_price` (float), not "a price" -->`description` (str), `size` (str or None), `max_price` (float or None)
 - **Returns:** A list of up to 10 listing dicts, best match first. Each dict has `id`, `title`, `description`, `category`, `style_tags` (list), `size`, `condition`, `price` (float), `colors` (list), `brand` (str or None), and `platform`.
-- **When it has nothing:**An empty list `[]`. Not None. Not an error.
+- **When it has nothing:** An empty list `[]`. Not None. Not an error.
 - **How it matches:** The description is split into lowercase words, and small words like "a", "the", "under" are dropped. Each listing scores one point for every word that appears in its `title`, `description`, or `style_tags`. Listings that score 0 are dropped.
 - **Size match rule:** Sizes are split on "/" and text in brackets is removed. Two sizes match if they share a part. Case does not matter. So "M" matches "S/M", and "XL" matches "XL (oversized)". But "S" does not match "US 9", and "L" does not match "XL". "W30" does not match "W30 L30", and "One Size" does not match other sizes.
 - **Price rule:** `max_price` is inclusive. A $30 item matches `max_price=30`.
@@ -74,7 +74,6 @@ FitFindr helps you shop for secondhand clothes. You describe what you want, like
 - **Inputs:** `new_item` (dict, one listing), `wardrobe` (dict with an `items` key; `items` is a list of wardrobe item dicts, each with `id`, `name`, `category`, `colors`, `style_tags`, and `notes`)
 - **Returns:** A non-empty string with one or two outfit ideas. Each idea names real pieces from the wardrobe.
 - **When it has nothing:** If the wardrobe is empty (`{"items": []}`), it returns general styling tips for the item. It still returns a non-empty string. Never "" and never an error.
-v
 
 ### `create_fit_card`
 
@@ -98,8 +97,8 @@ v
      The grader checks your code against what you claim here, so the file and
      function have to be real. -->
 
-**Branch rule:**
-If `search_listings` returns an empty list, put "No listings matched your search." in the session and stop. Otherwise, take the first result and pass it to `suggest_outfit`. Then pass the outfit to `create_fit_card`.
+**Branch rule:** If `search_listings` returns an empty list, put a message in `session["error"]` that names what was searched and what the user could change (broader words, a different size, a higher price), and stop before `suggest_outfit`. Otherwise, take the first result as `session["selected_item"]` and pass it to `suggest_outfit`. Then pass the outfit to `create_fit_card`.
+
 **Where it lives:** `agent.py::run_agent`
 
 **How the query is parsed:** <!-- regex, string splitting, or asking the model — say which -->
