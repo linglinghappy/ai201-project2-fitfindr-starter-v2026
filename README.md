@@ -117,8 +117,41 @@ FitFindr helps you shop for secondhand clothes. You describe what you want, like
 **One full query**
 
 ```
-$ python app.py ask '...'
+$ python app.py ask 'vintage graphic tee under $30'
+[1] parse_query
+      in:  vintage graphic tee under $30
+      out: dict with keys: description, size, max_price
+[2] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+      →    10 match(es)
+[3] select_item
+      out: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+[4] suggest_outfit
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      out: **Outfit 1: Casual Y2K Streetwear** * Y2K Baby Tee — Butterfly Print * Baggy straight-leg jeans, dark wash * C…
+      →    10 wardrobe item(s)
+[5] create_fit_card
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      out: Butterflies are officially back, and this vintage baby tee is giving major 2000s mall-goth-meets-sweetheart en…
 
+  Found:    Y2K Baby Tee — Butterfly Print — $18.0 on depop
+
+  Outfit:   **Outfit 1: Casual Y2K Streetwear**
+* Y2K Baby Tee — Butterfly Print
+* Baggy straight-leg jeans, dark wash
+* Chunky white sneakers
+* Black crossbody bag
+
+**Outfit 2: Edgy Contrast**
+* Y2K Baby Tee — Butterfly Print
+* Wide-leg khaki trousers
+* Vintage black denim jacket
+* Black combat boots
+
+  Fit card: Butterflies are officially back, and this vintage baby tee is giving major 2000s mall-goth-meets-sweetheart energy. Style it low-key with baggy denim and chunky kicks, or toughen it up with wide-leg khakis and combat boots. Grab this gem on my Depop right now for just $18! 🦋✨
+
+0 model calls this session, 2 served from cache
 ```
 
 **The three tools, tested one at a time**
