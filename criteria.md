@@ -28,6 +28,7 @@ tool calls and returns a fit card — in at least 4 of 5 tries.
 <!-- Why 4 of 5 and not 5 of 5? Something about your search, probably —
      "my search is a plain keyword match and some phrasings will miss" is a
      real answer. -->
+Two of the three tools call the model. A model call can fail. Also, `parse_query` uses regex. It can miss a price or size written in a new way, like "nothing over thirty dollars". So I allow one miss.
 
 ---
 
@@ -39,6 +40,7 @@ Given a query that matches no listings, the agent stops before calling
 **Why this target:**
 <!-- Why is 5 of 5 reasonable here when criterion 1 isn't? What's different
      about this path? -->
+This path never calls the model. The stop is a fixed `if not results:` check in `agent.py::run_agent`. The same query takes the same path every time. So any miss is a real bug.
 
 ---
 
@@ -54,11 +56,10 @@ Given a query that matches no listings, the agent stops before calling
      compares session["selected_item"] against what actually reached
      suggest_outfit is the shape you're after. -->
 
-
+I run 5 queries that reach `suggest_outfit`. Each time, the `id` of `session["selected_item"]` must match the `id` of the item `suggest_outfit` receives. Target: 5 of 5.
 
 **Why this target:**
-
-
+No model call happens between these two steps. If the ids do not match once, they will not match every time. So one miss means a real bug. I use `id` because it is unique. Two listings can have similar titles.
 
 ---
 
@@ -75,11 +76,12 @@ Given a query that matches no listings, the agent stops before calling
      sentence? A card longer than a caption anyone would post? Any of those can
      be turned into a number. -->
 
+I make fit cards for 5 different listings. Each card must mention the item's price. Target: at least 4 of 5.
 
+The price counts if the caption shows the number. It can have "$", ".00", "dollars" or "bucks". It must not be part of a bigger number. For a $24 item, "$24" counts, but "$124" does not.
 
 **Why this target:**
-
-
+The model writes the caption. It can leave out the price, even when the prompt asks for it. So I allow one miss. I check the number's edges so a bigger number does not count by mistake.
 
 ---
 
@@ -92,11 +94,14 @@ Given a query that matches no listings, the agent stops before calling
      search respects a price ceiling — anything, as long as it names a number
      or an observable outcome. -->
 
+I call `search_listings` directly with the description "vintage". I run 5 searches: size "S", "M", "L", "XL", and "M" with `max_price=30`. Every result must fit the size rule in my README. Target: 5 of 5.
 
+A search fails if:
+- it returns a size the rule excludes, like "US 9" for "S" or "XL" for "L", or
+- size "M" leaves out a matching "S/M" or "M/L" listing.
 
 **Why this target:**
-
-
+`search_listings` does not call the model. The same search gives the same result every time. So one miss means a real bug. I test the tool directly. That way, a miss points to the size rule, not to `parse_query`.
 
 ---
 
