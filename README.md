@@ -327,20 +327,54 @@ that produced it:
 **Happy path**
 
 ```
+$ python app.py ask 'vintage graphic tee under $30' --trace
+[1] parse_query
+      in:  vintage graphic tee under $30
+      out: dict with keys: description, size, max_price
+[2] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: 10 items: Y2K Baby Tee — Butterfly Print, Graphic Tee — 2003 Tour Bootleg Style, Vintage Band Tee — Faded Grey … +7 more
+      →    10 match(es)
+[3] select_item
+      out: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+[4] suggest_outfit
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      out: **Outfit 1: Casual Y2K Streetwear** * Y2K Baby Tee — Butterfly Print * Baggy straight-leg jeans, dark wash * C…
+      →    10 wardrobe item(s)
+[5] create_fit_card
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      out: Butterflies are officially back, and this vintage baby tee is giving major 2000s mall-goth-meets-sweetheart en…
 
+0 model calls this session, 2 served from cache
 ```
 
 **Empty search**
 
 ```
+$ python app.py ask 'designer ballgown size XXS under $5' --trace
+[1] parse_query
+      in:  designer ballgown size XXS under $5
+      out: dict with keys: description, size, max_price
+[2] search_listings (via MCP)
+      in:  dict with keys: description, size, max_price
+      out: [] (empty)
+      →    0 match(es)
+[3] branch
+      →    search returned []: stopping before suggest_outfit
 
+  Nothing in the listings matched description 'designer ballgown', size XXS, under $5.
+Things to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.
+
+0 model calls this session
 ```
+
+The empty search stops at step 3. The happy path goes on to step 5. So the branch works.
 
 **On the MCP move:** <!-- what changed in your code, and whether anything
 behaved differently afterwards. If the rewire didn't work, say exactly where it
 broke — the error text and the last thing that worked. That earns the point in
 full. -->
-
+I registered `search_listings` in `mcp_server.py`, with typed inputs and a description. `agent.py::_search` now calls it with `mcp_client.call_tool`. Nothing behaved differently. I called the tool both ways with `'graphic tee'` and `max_price=30`. Both returned a list of 6 dicts, with the same ids in the same order. Prices stayed floats (`18.0`), and `brand` stayed `None`. One thing to know: `_search` falls back to the direct call if MCP fails, without a warning. So if MCP breaks, the trace would still say "via MCP".
 
 
 ---
