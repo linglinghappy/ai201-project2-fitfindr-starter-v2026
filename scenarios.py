@@ -35,6 +35,23 @@ SCENARIOS = [
         "wardrobe": "empty",
         "criterion": None,
     },
+    {
+        # Criterion 3 — state. Compare selected_item.id with
+        # outfit_input_id and fit_card_input_id in the session.
+        "name": "state: selected item reaches both tools",
+        "query": "black combat boots",
+        "wardrobe": "example",
+        "criterion": 3,
+    },
+    # Criterion 4 — fit card mentions the price, 5 different listings.
+    {"name": "fit card price: baby tee ($18)",       "query": "vintage graphic tee under $30", "wardrobe": "example", "criterion": 4},
+    {"name": "fit card price: cardigan ($35)",       "query": "pink cardigan under $40",       "wardrobe": "example", "criterion": 4},
+    {"name": "fit card price: levi's 501 ($38)",     "query": "levi's 501 jeans",              "wardrobe": "example", "criterion": 4},
+    {"name": "fit card price: track jacket ($45)",   "query": "90s track jacket",              "wardrobe": "example", "criterion": 4},
+    {"name": "fit card price: corduroy pants ($32)", "query": "corduroy wide-leg pants",       "wardrobe": "example", "criterion": 4},
+    # Criterion 5 is tested by calling search_listings directly, outside
+    # run_eval.py — see results/criterion5_direct.txt.
+    #
     # TODO: add what your criteria 3, 4 and 5 need.
     #
     # Set "criterion" to the number in criteria.md that the scenario tests.

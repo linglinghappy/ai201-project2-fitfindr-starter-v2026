@@ -265,18 +265,71 @@ Nothing beats the way broken-in denim hugs you just right. These vintage Levi's 
 
 | Criterion | Target | Try 1 | Try 2 | Try 3 | Try 4 | Try 5 | Verdict |
 |---|---|---|---|---|---|---|---|
-| 1.  |  |  |  |  |  |  |  |
-| 2.  |  |  |  |  |  |  |  |
-| 3.  |  |  |  |  |  |  |  |
-| 4.  |  |  |  |  |  |  |  |
-| 5.  |  |  |  |  |  |  |  |
+| 1. Full three-tool run returns a fit card | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 2. Impossible query stops before suggest_outfit | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 3. selected_item reaches suggest_outfit unchanged | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 4. Fit card mentions the item's price (5 listings) | 4 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+| 5. Size filter follows the size rule | 5 of 5 | PASS | PASS | PASS | PASS | PASS | MET (5/5) |
+
+Criteria 1–4 come from `python run_eval.py --label before` (`results/run_2026-10-12_1524_before.md`, caching off, 80 model calls). For criterion 4, Try N means the Nth run of each of the 5 listings. All 25 fit cards had the right price. Criterion 5 does not call the model, so I called `search_listings` directly (`results/criterion5_direct.txt`).
 
 **Real output from one try**, pasted as text, naming the file and function
 that produced it:
 
-```
+**Criterion 1** — `agent.py::run_agent`, try 1. All three tools ran and a fit card came back:
 
 ```
+[3] select_item
+      out: Y2K Baby Tee — Butterfly Print ($18.0, depop)
+[4] suggest_outfit
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      →    10 wardrobe item(s)
+[5] create_fit_card
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+  try 1: completed — fit card 364 chars
+```
+
+**Criterion 2** — `agent.py::run_agent` (the branch) and `agent.py::_nothing_found_message`, try 1:
+
+```
+[2] search_listings (via MCP)
+      out: [] (empty)
+      →    0 match(es)
+[3] branch
+      →    search returned []: stopping before suggest_outfit
+  try 1: stopped early — Nothing in the listings matched description 'designer ballgown', size XXS, under $5.
+```
+
+**Criterion 3** — `agent.py::run_agent`, try 1. The same item goes from select_item into both tools:
+
+```
+[3] select_item
+      out: Oversized Flannel Shirt — Plaid Red/Black ($22.0, thredUp)
+[4] suggest_outfit
+      in:  Oversized Flannel Shirt — Plaid Red/Black ($22.0, thredUp)
+[5] create_fit_card
+      in:  Oversized Flannel Shirt — Plaid Red/Black ($22.0, thredUp)
+```
+
+`run_eval.py` doesn't print the ids, so I matched the item shown in the trace at each step. It was the same in all 5 tries.
+
+**Criterion 4** — `tools.py::create_fit_card`, baby tee try 1. The price ($18) is in the caption:
+
+```
+Butterfly print baby tees are having a major moment right now, and this Y2K thrift find is literally everything. I styled it two ways: super casual with baggy dark wash denim, and then flipped the script with khaki trousers and chunky combat boots for that effortless edgy contrast. Grab this exact piece over on my Depop for just $18 before someone else snags it!
+```
+
+**Criterion 5** — `tools.py::search_listings`, called directly with description `"vintage"` (no model):
+
+```
+size=S max_price=None: 3 results -> [('S/M', 18.0), ('S', 42.0), ('S', 52.0)]
+size=M max_price=None: 10 results -> [('S/M', 18.0), ('M', 45.0), ('M', 30.0), ('M/L', 38.0), ('M', 16.0), ('M', 75.0), ('M', 18.0), ('M', 28.0), ('M', 25.0), ('M', 27.0)]
+size=L max_price=None: 5 results -> [('L', 24.0), ('L', 40.0), ('L', 26.0), ('M/L', 38.0), ('L', 19.0)]
+size=XL max_price=None: 3 results -> [('XL (oversized)', 22.0), ('XL (fits oversized)', 20.0), ('XL', 21.0)]
+size=M max_price=30: 7 results -> [('S/M', 18.0), ('M', 30.0), ('M', 16.0), ('M', 18.0), ('M', 28.0), ('M', 25.0), ('M', 27.0)]
+```
+
+No size the rule excludes shows up: "L" does not return "XL" or "W30 L30". "M" includes both "S/M" and "M/L". With max_price=30, every result is $30 or less.
 
 ---
 
@@ -370,6 +423,57 @@ Things to change: try broader words — 'jacket' finds more than 'cropped cordur
 
 The empty search stops at step 3. The happy path goes on to step 5. So the branch works.
 
+### Failure Modes
+
+**1. Empty search.** The agent stops before `suggest_outfit` and says what to change.
+
+```
+$ python app.py ask 'designer ballgown size XXS under $5'
+
+  Nothing in the listings matched description 'designer ballgown', size XXS, under $5.
+Things to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.
+
+0 model calls this session
+```
+
+**2. Empty wardrobe.** `suggest_outfit` gets 0 wardrobe items. It gives general advice, not a crash and not an empty string.
+
+```
+$ python app.py ask 'vintage graphic tee under $30' --empty-wardrobe --trace
+(running with an empty wardrobe)
+...
+[4] suggest_outfit
+      in:  Y2K Baby Tee — Butterfly Print ($18.0, depop)
+      out: **Look 1: Casual Streetwear** Pair the baby tee with classic mid-rise blue straight-leg jeans and white canvas…
+      →    0 wardrobe item(s)
+[5] create_fit_card
+      ...
+
+  Outfit:   **Look 1: Casual Streetwear**
+Pair the baby tee with classic mid-rise blue straight-leg jeans and white canvas sneakers. Add a small shoulder bag and a simple silver chain necklace to lean into the effortless Y2K aesthetic.
+
+**Look 2: Sweet & Sporty**
+Tuck the tee into a pleated white tennis skirt and layer with chunky white platform sneakers or retro trainers. Throw on a pastel pink zip-up hoodie over your shoulders for cool evenings, completing a playful, nostalgic weekend outfit.
+```
+
+**3. Model unavailable.** I used a wrong key and turned the cache off, so the model was really called. The agent did not hang and did not show a stack trace. It kept the search results and said what to fix.
+
+```
+$ GEMINI_API_KEY=bad_key_x AI201_CACHE=0 python app.py ask 'black leather boots size 8'
+...
+[3] select_item
+      out: Platform Mary Janes — Black Patent ($55.0, depop)
+[4] model unavailable
+      →    stopping, search results kept
+
+  The model couldn't be reached, so the outfit and caption steps didn't run. The search worked — 10 listing(s) were found. Check GEMINI_API_KEY in your .env, then run the same query again.
+What the service said: The model rejected your API key. Check GEMINI_API_KEY in your .env file, or create a fresh key at aistudio.google.com.
+
+1 model calls this session
+```
+
+None of the three crashed or went silent. The handler for the model error is the `except ModelUnavailable` block in `agent.py::run_agent`.
+
 **On the MCP move:** <!-- what changed in your code, and whether anything
 behaved differently afterwards. If the rewire didn't work, say exactly where it
 broke — the error text and the last thing that worked. That earns the point in
@@ -436,7 +540,7 @@ I registered `search_listings` in `mcp_server.py`, with typed inputs and a descr
 
        [ ] mcp_server.py exists with one tool registered
            (or a written record of exactly where the rewire broke)
-       [ ] Run Log — Before, five criteria, five tries each
+       [x] Run Log — Before, five criteria, five tries each
        [ ] Real output pasted underneath, naming file and function
        [ ] A verdict on every criterion
        [ ] A diagnosis for every miss, naming a place AND a mechanism

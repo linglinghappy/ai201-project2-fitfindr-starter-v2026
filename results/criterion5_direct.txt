@@ -1,0 +1,5 @@
+size=S max_price=None: 3 results -> [('S/M', 18.0), ('S', 42.0), ('S', 52.0)]
+size=M max_price=None: 10 results -> [('S/M', 18.0), ('M', 45.0), ('M', 30.0), ('M/L', 38.0), ('M', 16.0), ('M', 75.0), ('M', 18.0), ('M', 28.0), ('M', 25.0), ('M', 27.0)]
+size=L max_price=None: 5 results -> [('L', 24.0), ('L', 40.0), ('L', 26.0), ('M/L', 38.0), ('L', 19.0)]
+size=XL max_price=None: 3 results -> [('XL (oversized)', 22.0), ('XL (fits oversized)', 20.0), ('XL', 21.0)]
+size=M max_price=30: 7 results -> [('S/M', 18.0), ('M', 30.0), ('M', 16.0), ('M', 18.0), ('M', 28.0), ('M', 25.0), ('M', 27.0)]
