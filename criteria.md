@@ -61,6 +61,10 @@ I run 5 queries that reach `suggest_outfit`. Each time, the `id` of `session["se
 **Why this target:**
 No model call happens between these two steps. If the ids do not match once, they will not match every time. So one miss means a real bug. I use `id` because it is unique. Two listings can have similar titles.
 
+> **Revised in unit 4:** I run 5 queries that reach `suggest_outfit`. Each time, the listing shown at `select_item`, `suggest_outfit` and `create_fit_card` in the trace must be the same. Target: 5 of 5.
+>
+> **Why revised:** The original compares ids, but `run_eval.py` doesn't print `outfit_input_id` or `fit_card_input_id`, so I couldn't score it from the run output. The trace shows each step's listing, and all 40 titles in the data are unique, so matching the title is something I can actually score.
+
 ---
 
 ## 4. Something about the fit card

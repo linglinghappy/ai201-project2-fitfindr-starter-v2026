@@ -353,13 +353,23 @@ No size the rule excludes shows up: "L" does not return "XL" or "W30 L30". "M" i
 
 | # | Criterion | Target | Verdict | How I decided |
 |---|---|---|---|---|
-| 1 |  |  |  |  |
-| 2 |  |  |  |  |
-| 3 |  |  |  |  |
-| 4 |  |  |  |  |
-| 5 |  |  |  |  |
+| 1 | Full three-tool run returns a fit card | 4 of 5 | MET (5/5) | All 5 tries reached create_fit_card and returned a non-empty card (276–364 chars). |
+| 2 | Impossible query stops before suggest_outfit | 5 of 5 | MET (5/5) | All 5 traces end at `[3] branch` with no suggest_outfit step, and session["error"] names what to change. |
+| 3 | selected_item reaches suggest_outfit unchanged (revised) | 5 of 5 | MET (5/5) | In all 5 traces the listing at select_item, suggest_outfit and create_fit_card is the same. |
+| 4 | Fit card mentions the item's price | 4 of 5 | MET (5/5) | 25 fit cards (5 listings × 5 tries). Every one had the exact price, e.g. "$18". |
+| 5 | Size filter follows the size rule | 5 of 5 | MET (5/5) | 5 direct searches. No excluded size appeared, "M" included S/M and M/L, and max_price=30 kept every result at $30 or less. |
 
 **Diagnoses**
+
+No criterion missed. All five were 5 of 5.
+
+Were my targets too low? Partly, yes.
+
+- Criteria 2, 3 and 5 don't depend on the model. The search, the branch and the session are deterministic, so 5 of 5 was expected. They show the code is right, but they don't test anything that varies.
+- Criterion 1 aimed at 4 of 5 and got 5 of 5. The only model-dependent risk is a ModelUnavailable error, and that didn't happen in this run.
+- Criterion 4 is the one I would tighten. It aimed at 4 of 5 and passed 25 of 25 cards. My prompt in `tools.py::create_fit_card` gives the price, and the model copies it every time, so "mentions the price" is too easy. I would make it 5 of 5 and add a check the model can actually fail, like a length a person would post: 19 of the 25 cards were longer than 300 characters.
+
+Criterion 3 was revised, not missed. As written, it compares ids, and `run_eval.py` doesn't print them. See the revision in `criteria.md`.
 
 
 
@@ -542,8 +552,8 @@ I registered `search_listings` in `mcp_server.py`, with typed inputs and a descr
            (or a written record of exactly where the rewire broke)
        [x] Run Log — Before, five criteria, five tries each
        [ ] Real output pasted underneath, naming file and function
-       [ ] A verdict on every criterion
-       [ ] A diagnosis for every miss, naming a place AND a mechanism
+       [x] A verdict on every criterion
+       [x] A diagnosis for every miss, naming a place AND a mechanism
        [ ] Loop Trace, with the MCP call visible in it
        [ ] All three failure modes triggered and handled
        [ ] One improvement, with Run Log — After in the same format
