@@ -540,6 +540,12 @@ Channeling major 90s athletic energy with this navy & white track jacket! Grab i
      you did. "I ran out of time" is fine if it's true. Pretending nothing is
      left is not. -->
 
+No criterion is still missed: all five were 5 of 5 before and after. But some things are still broken that my criteria don't catch.
+
+1. **Search picks the wrong item.** For "black combat boots", all 10 runs selected "Oversized Flannel Shirt — Plaid Red/Black". `tools.py::search_listings` scores by how many query words appear, so "black" pulls the shirt to the top, and `agent.py::run_agent` always takes the first result. None of my criteria check that the selected item is what the user asked for. I'd add a criterion like "the top result's title contains the main item word (boots, jeans, jacket)" and score title matches higher than tag or description matches. I stopped because Milestone 5 allows one change, and I found this only when reading the run output.
+2. **The MCP fallback is silent.** If `mcp_client.call_tool` fails, `agent.py::_search` calls `search_listings` directly, but the trace still says "via MCP". I'd add a trace note when the fallback runs. I left it because the fallback keeps the agent working, and MCP never failed in my runs.
+3. **Criterion 3 checks titles, not ids.** `run_eval.py` doesn't print `outfit_input_id` or `fit_card_input_id`. I'd print them so the original id check can be scored.
+4. **Criterion 4 is still too easy.** The 300-character limit is only in the prompt, not in a criterion. I'd revise criterion 4 to "5 of 5 cards mention the price and are under 300 characters." Also, the prompt is missing a space ("once each.Keep"). I left it so the code matches the after run.
 
 
 <!-- ═════════════════════════════════════════════════════════════════════
@@ -553,23 +559,23 @@ Channeling major 90s athletic energy with this navy & white track jacket! Grab i
            return value, and the empty case
        [ ] Planning Loop names the branch rule and agent.py::run_agent
        [ ] Sample Run: one full query plus the three per-tool tests, as text
-       [ ] At least four new commits
+       [x] At least four new commits
        [ ] Repository URL submitted — WRITE IT DOWN, you submit the same one
            next unit
 
      SUBMISSION CHECKLIST — unit 4
 
-       [ ] mcp_server.py exists with one tool registered
+       [x] mcp_server.py exists with one tool registered
            (or a written record of exactly where the rewire broke)
        [x] Run Log — Before, five criteria, five tries each
-       [ ] Real output pasted underneath, naming file and function
+       [x] Real output pasted underneath, naming file and function
        [x] A verdict on every criterion
        [x] A diagnosis for every miss, naming a place AND a mechanism
-       [ ] Loop Trace, with the MCP call visible in it
-       [ ] All three failure modes triggered and handled
+       [x] Loop Trace, with the MCP call visible in it
+       [x] All three failure modes triggered and handled
        [x] One improvement, with Run Log — After in the same format
-       [ ] What's Still Broken
-       [ ] At least four new commits
+       [x] What's Still Broken
+       [x] At least four new commits
        [ ] The SAME repository URL as last unit
 
      Do not delete and recreate this repository. Your commit history is what
