@@ -227,5 +227,6 @@ def create_fit_card(outfit: str, new_item: dict) -> str:
         f"How it's styled: {outfit}\n\n"
         "Write it like a real post, not a product description. Be specific "
         "about the vibe. Mention the item, the price, and the platform once each."
+        "Keep the whole caption under 300 characters."
     )
     return generate(prompt)
