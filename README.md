@@ -585,3 +585,68 @@ No criterion is still missed: all five were 5 of 5 before and after. But some th
 ---
 
 📖 **How to run this project: [RUNNING.md](RUNNING.md)**
+
+---
+
+## Capstone
+
+**What This Extends**
+
+This extends **FitFindr** (unit 3 and 4): an agent that searches 40 thrift
+listings, suggests an outfit with clothes you already own, and writes a short
+fit card caption. Before this unit it ran only on my laptop.
+
+What's new is a **response cache** in front of the `/ask` route in
+`serve.py`. When the same request comes in again, the service returns the
+saved result straight away. It doesn't parse the query again, doesn't start
+the MCP search process, and doesn't call the model twice.
+
+FitFindr already had a cache, in `generate.py`. That one is different:
+
+| | Old cache (`generate.py`) | New cache (this unit) |
+|---|---|---|
+| What it saves | one model prompt's answer | the whole `/ask` result |
+| What it skips | one model call | the whole agent: parsing, MCP search, both model calls |
+| What it's for | saving quota while building; off during evaluation | serving real requests faster and cheaper |
+| Key | the prompt text | the normalised query + the wardrobe |
+| Expires | never | after a time limit (TTL) |
+| Size limit | none | a maximum number of entries |
+| Saves failures | — | no |
+| Says when it was used | no | yes: `cache_hit` in the response and the log |
+
+**The Shape**
+
+**Shape C: extend one capability.** I'm adding one capability, a response
+cache, to a system that already works. The cache key is the query (lower
+case, extra spaces removed) plus the wardrobe. Entries expire after 10 minutes,
+the cache holds at most 100 entries and drops the least recently used one when
+full, and a run that ends with `session["error"]` is never saved. Every
+response and every log record says whether it came from the cache
+(`cache_hit`). I learned to do this from FitFindr's own "What's Still Broken":
+the MCP fallback was silent, and the trace said "via MCP" when MCP never ran.
+A cache that doesn't say it was used would hide things the same way. A cache
+hit also skips the one-at-a-time lock in `serve.py`, so it doesn't wait behind
+someone else's slow run. As every shape requires, the service is deployed (on
+Render) and every request is logged.
+
+**Out of scope:**
+- **I'm not fixing the search.** "black combat boots" still picks the plaid
+  flannel shirt. The cache will save that wrong pick and repeat it until the
+  entry expires. Fixing the search is a different capability.
+- **I'm not using an outside cache service** like Redis. The cache lives in
+  the server's memory, so it is empty again after Render restarts or wakes up
+  from sleep. That is a real limit, and I'll measure it rather than fix it.
+- **I'm not changing what the agent does.** The tools, the prompts, the
+  model and the temperature (0.9) stay as they were. The only change in
+  `agent.py` is adding timers around each stage for the latency breakdown,
+  which measures the run without changing it.
+
+**Stretch (declared before starting): latency breakdown.** I'll time each
+stage of one run (parsing the query, the MCP search, `suggest_outfit`,
+`create_fit_card`) and report where the time actually goes, for a cache miss
+and a cache hit.
+
+**Size check:** the cache is about 40 lines, the log about 30, the stage timing
+about 15, and a route to empty the cache between trials about 15. That is
+under the 90-minute limit. The rest of the unit is the deployment, the
+testing and the write-up.
