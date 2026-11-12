@@ -49,6 +49,13 @@ TEMPERATURE = 0.9
 # real answers. `run_eval.py` handles that for you.
 CACHE_ENABLED = os.getenv("AI201_CACHE", "1") != "0"
 
+# Capstone: the response cache in front of serve.py's /ask (cache.py). This is
+# a different cache from the one above: it saves the whole finished session,
+# not one model answer. Entries expire after RESPONSE_CACHE_TTL_S seconds, and
+# the oldest-used entry is dropped once there are RESPONSE_CACHE_MAX of them.
+RESPONSE_CACHE_TTL_S = int(os.getenv("RESPONSE_CACHE_TTL_S", "600"))
+RESPONSE_CACHE_MAX = int(os.getenv("RESPONSE_CACHE_MAX", "100"))
+
 
 # ─── The agent loop ──────────────────────────────────────────────────────────
 

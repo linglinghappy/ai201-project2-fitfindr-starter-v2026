@@ -46,6 +46,7 @@ import config  # noqa: F401
 
 from flask import Flask, jsonify, request
 
+import cache
 import generate
 from agent import run_agent
 from utils.data_loader import get_example_wardrobe
@@ -149,6 +150,18 @@ def ask():
         wardrobe = get_example_wardrobe()
         wardrobe_label = "default"
 
+    # Capstone: the response cache. Checked BEFORE the lock, so a hit doesn't
+    # wait behind someone else's slow run.
+    key = cache.make_key(query, wardrobe)
+    cached = cache.get(key)
+    if cached is not None:
+        log_run(query=query, wardrobe=wardrobe_label, cache_key=key, status=200,
+                cache_hit=True, duration_ms=_ms_since(start), model_calls=0,
+                prompt_tokens=0, output_tokens=0,
+                selected_item=(cached.get("selected_item") or {}).get("id"),
+                error=None)
+        return jsonify({**cached, "cache_hit": True})
+
     # A queued request should look like a queued request. Without this the
     # second caller just sits there, and "slow" and "waiting its turn" are
     # indistinguishable from the outside — which is how people conclude the
@@ -185,9 +198,12 @@ def ask():
     # Outside the lock: building a response is not work the next caller should
     # be waiting on.
     status = 500 if failure is not None else 200
+    if failure is None:
+        cache.put(key, session)  # skipped inside put() if session["error"] is set
     log_run(
         query=query,
         wardrobe=wardrobe_label,
+        cache_key=key,
         status=status,
         cache_hit=False,
         duration_ms=_ms_since(start),
@@ -201,7 +217,24 @@ def ask():
     if failure is not None:
         return jsonify({"error": failure}), 500
 
-    return jsonify(session)
+    return jsonify({**session, "cache_hit": False})
+
+
+@app.post("/cache/clear")
+def cache_clear():
+    """
+    Capstone: empty the response cache, so each test trial starts cold.
+
+    Needs the X-Admin-Token header to match the CACHE_ADMIN_TOKEN environment
+    variable. If that variable isn't set, the route is switched off, so
+    forgetting to set it doesn't leave the cache open to anyone.
+    """
+    token = os.getenv("CACHE_ADMIN_TOKEN")
+    if not token:
+        return jsonify({"error": "Not enabled. Set CACHE_ADMIN_TOKEN to use it."}), 404
+    if request.headers.get("X-Admin-Token") != token:
+        return jsonify({"error": "Wrong or missing X-Admin-Token header."}), 403
+    return jsonify({"cleared": cache.clear()})
 
 
 if __name__ == "__main__":
