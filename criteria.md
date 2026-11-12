@@ -140,3 +140,90 @@ A search fails if:
      A number you missed stays where it is, gets diagnosed, and gets a fix
      attempted. That's where the points are.
      ───────────────────────────────────────────────────────────────────────── -->
+
+---
+
+## Capstone
+
+Five new criteria for the capstone extension: a **response cache** in front of
+`serve.py`'s `/ask` route. Written **before** any capstone code or results
+existed. The unit 3 criteria above are unchanged.
+
+Every capstone run uses the deployed service with the old prompt-level cache
+in `generate.py` **turned off** (`AI201_CACHE=0`). Otherwise a "miss" could be
+sped up by the old cache, and I couldn't tell which cache did what.
+
+Each criterion must hold in **all three trials**. The cache is emptied before
+each trial.
+
+---
+
+## C1. A cache hit doesn't call the model
+
+I send 5 different queries that reach a fit card. Then I send each one again,
+exactly the same. Every second send must be logged with `cache_hit: true` and
+`model_calls: 0`. Target: 5 of 5, in each trial.
+
+**Why this target:**
+Skipping the model is the whole point of the cache. It is where the time and
+the token cost are saved. A hit is a dictionary lookup, not a model call, so
+there is no randomness here. One miss means a real bug, so I allow none.
+
+---
+
+## C2. A cache hit is fast
+
+For the 5 cache hits in C1, the median server-side `duration_ms` in the log
+must be 50 ms or less. Target: in each trial.
+
+**Why this target:**
+A miss runs the search through MCP (a new Python process every time) and two
+model calls, so it takes seconds. A hit should only look up a key and turn the
+saved session into JSON. 50 ms is far below a miss but leaves room for the
+slower machine on Render. I use the median so one slow request doesn't decide
+the result. I measure on the server, not in my test script, so the network
+between my laptop and Render doesn't count.
+
+---
+
+## C3. A cache hit returns the same answer
+
+For the 5 cache hits in C1, the response must match the first response: the
+same `selected_item` id, the same outfit text and the same fit card text.
+Target: 5 of 5, in each trial.
+
+**Why this target:**
+My temperature is 0.9, so a real second run would give different words. If a
+hit's words are different, the cache didn't really answer, or it saved only
+part of the session. I compare the id, not the title, because the id is what
+the code uses.
+
+---
+
+## C4. A failed run is never saved
+
+I send 3 queries that end with `session["error"]` set (queries that match no
+listings). I send each one twice. The second send must be logged with
+`cache_hit: false`. Target: 3 of 3, in each trial.
+
+**Why this target:**
+If a failure is saved, the user keeps getting the failure until the cache
+entry expires, even after the problem is gone. These queries never call the
+model, so they behave the same every time. One miss means a real bug.
+
+---
+
+## C5. Every request leaves exactly one log record
+
+In each trial I count every request I send to `/ask`, including 2 bad
+requests that should get a 400 (an empty body, and a body with no `query`).
+The number of new records in `logs/runs.jsonl` must equal the number of
+requests. Every record must have these fields: `timestamp`, `query`,
+`status`, `cache_hit`, `duration_ms`, `model_calls`, `prompt_tokens`,
+`output_tokens`, `error`. Target: 100% of requests, in each trial.
+
+**Why this target:**
+The other four criteria are scored from this log. If a request leaves no
+record, or a record is missing a field, I can't score them. A 400 must be
+logged too, because a request that leaves no trace looks the same as no
+request at all.
