@@ -141,7 +141,7 @@ def ask():
                    '{"query": "vintage graphic tee under $30"}')
         log_run(query=None, wardrobe=None, status=400, cache_hit=False,
                 duration_ms=_ms_since(start), model_calls=0, prompt_tokens=0,
-                output_tokens=0, selected_item=None, error=message)
+                output_tokens=0, selected_item=None, error=message, timings_ms=None)
         return jsonify({"error": message}), 400
 
     wardrobe = payload.get("wardrobe")
@@ -159,7 +159,7 @@ def ask():
                 cache_hit=True, duration_ms=_ms_since(start), model_calls=0,
                 prompt_tokens=0, output_tokens=0,
                 selected_item=(cached.get("selected_item") or {}).get("id"),
-                error=None)
+                error=None, timings_ms=None)
         return jsonify({**cached, "cache_hit": True})
 
     # A queued request should look like a queued request. Without this the
@@ -212,6 +212,7 @@ def ask():
         output_tokens=tokens_after["output"] - tokens_before["output"],
         selected_item=((session or {}).get("selected_item") or {}).get("id"),
         error=failure if failure is not None else session.get("error"),
+        timings_ms=(session or {}).get("timings_ms"),
     )
 
     if failure is not None:

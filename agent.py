@@ -1,4 +1,5 @@
 import re
+import time
 
 import config
 import trace
@@ -31,7 +32,13 @@ def new_session(query: str, wardrobe: dict) -> dict:
         "outfit_suggestion": None,   # what suggest_outfit returned
         "fit_card": None,            # what create_fit_card returned
         "error": None,               # set when the run ended early
+        "timings_ms": {},            # capstone: how long each stage took
     }
+
+
+def _ms_since(start: float) -> int:
+    """Capstone latency breakdown: milliseconds since `start`."""
+    return round((time.perf_counter() - start) * 1000)
 
 
 # ── parsing the query ─────────────────────────────────────────────────────────
@@ -139,13 +146,17 @@ def run_agent(query: str, wardrobe: dict) -> dict:
     try:
         steps += 1
         trace.check_iterations(steps)
+        t = time.perf_counter()
         parsed = parse_query(query)
+        session["timings_ms"]["parse_query"] = _ms_since(t)
         session["parsed"] = parsed
         trace.step("parse_query", inputs=query, returned=parsed)
 
         steps += 1
         trace.check_iterations(steps)
+        t = time.perf_counter()
         results = _search(parsed)
+        session["timings_ms"]["search_listings"] = _ms_since(t)
         session["search_results"] = results
         trace.step(
             "search_listings (via MCP)",
@@ -171,9 +182,11 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         steps += 1
         trace.check_iterations(steps)
         session["outfit_input_id"] = session["selected_item"]["id"]
+        t = time.perf_counter()
         session["outfit_suggestion"] = suggest_outfit(
             session["selected_item"], session["wardrobe"]
         )
+        session["timings_ms"]["suggest_outfit"] = _ms_since(t)
         trace.step(
             "suggest_outfit",
             inputs=session["selected_item"],
@@ -184,9 +197,11 @@ def run_agent(query: str, wardrobe: dict) -> dict:
         steps += 1
         trace.check_iterations(steps)
         session["fit_card_input_id"] = session["selected_item"]["id"]
+        t = time.perf_counter()
         session["fit_card"] = create_fit_card(
             session["outfit_suggestion"], session["selected_item"]
         )
+        session["timings_ms"]["create_fit_card"] = _ms_since(t)
         trace.step(
             "create_fit_card",
             inputs=session["selected_item"],
