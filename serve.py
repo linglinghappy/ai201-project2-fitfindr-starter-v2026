@@ -33,9 +33,12 @@ then deploy it. A structured log you were handed teaches you nothing about
 what belongs in one — and the timing field is the one everybody skips.
 """
 
+import json
 import os
 import sys
 import threading
+import time
+from datetime import datetime, timezone
 
 # config first, and before anything that talks to the model: it loads your .env
 # and fixes the Windows console encoding for every module that imports it.
@@ -43,12 +46,30 @@ import config  # noqa: F401
 
 from flask import Flask, jsonify, request
 
+import generate
 from agent import run_agent
 from utils.data_loader import get_example_wardrobe
 
 app = Flask(__name__)
 
+# ── Capstone: one structured log record per /ask request ─────────────────────
+# Every request writes one JSON line, including 400s and 500s. It also goes to
+# stdout, because on Render stdout is the log you can read; the file is wiped
+# whenever the service restarts.
+LOG_FILE = config.ROOT / "logs" / "runs.jsonl"
 
+
+def log_run(**fields):
+    entry = {"timestamp": datetime.now(timezone.utc).isoformat(timespec="seconds"), **fields}
+    line = json.dumps(entry, ensure_ascii=False)
+    LOG_FILE.parent.mkdir(exist_ok=True)
+    with LOG_FILE.open("a", encoding="utf-8") as f:
+        f.write(line + "\n")
+    print(line, flush=True)
+
+
+def _ms_since(start: float) -> int:
+    return round((time.perf_counter() - start) * 1000)
 # ── one request at a time ─────────────────────────────────────────────────────
 # Here's why this exists.
 #
@@ -107,16 +128,26 @@ def ask():
                                                 example wardrobe the CLI uses.
     Out:  the session dict from run_agent(), as JSON.
     """
-    payload = request.get_json(silent=True) or {}
+    start = time.perf_counter()
+
+    payload = request.get_json(silent=True)
+    if not isinstance(payload, dict):
+        payload = {}
     query = (payload.get("query") or "").strip()
     if not query:
         # 400 rather than a stack trace: the caller can act on this one.
-        return jsonify({"error": "Send JSON with a 'query' field, e.g. "
-                                 '{"query": "vintage graphic tee under $30"}'}), 400
+        message = ("Send JSON with a 'query' field, e.g. "
+                   '{"query": "vintage graphic tee under $30"}')
+        log_run(query=None, wardrobe=None, status=400, cache_hit=False,
+                duration_ms=_ms_since(start), model_calls=0, prompt_tokens=0,
+                output_tokens=0, selected_item=None, error=message)
+        return jsonify({"error": message}), 400
 
     wardrobe = payload.get("wardrobe")
+    wardrobe_label = "custom"
     if not isinstance(wardrobe, dict):
         wardrobe = get_example_wardrobe()
+        wardrobe_label = "default"
 
     # A queued request should look like a queued request. Without this the
     # second caller just sits there, and "slow" and "waiting its turn" are
@@ -139,13 +170,34 @@ def ask():
     failure = None
     session = None
     with _one_at_a_time:
+        # generate.py counts calls and tokens for the whole process, so this
+        # request's share is the difference. The lock means nothing else is
+        # calling the model in between.
+        calls_before = generate.call_count()
+        tokens_before = generate.token_counts()
         try:
             session = run_agent(query, wardrobe)
         except Exception as exc:  # noqa: BLE001 — a 500 with a sentence beats a hang
             failure = f"{type(exc).__name__}: {exc}"
+        model_calls = generate.call_count() - calls_before
+        tokens_after = generate.token_counts()
 
     # Outside the lock: building a response is not work the next caller should
     # be waiting on.
+    status = 500 if failure is not None else 200
+    log_run(
+        query=query,
+        wardrobe=wardrobe_label,
+        status=status,
+        cache_hit=False,
+        duration_ms=_ms_since(start),
+        model_calls=model_calls,
+        prompt_tokens=tokens_after["prompt"] - tokens_before["prompt"],
+        output_tokens=tokens_after["output"] - tokens_before["output"],
+        selected_item=((session or {}).get("selected_item") or {}).get("id"),
+        error=failure if failure is not None else session.get("error"),
+    )
+
     if failure is not None:
         return jsonify({"error": failure}), 500
 
