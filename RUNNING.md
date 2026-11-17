@@ -29,6 +29,7 @@ cache (`cache.py`).
 | `GET /health` | `{"status":"ok"}` if the service is awake |
 | `POST /ask` | `{"query": "...", "wardrobe": {...}}` (wardrobe optional). Returns the session as JSON, plus `cache_hit` and `timings_ms` |
 | `POST /cache/clear` | Empties the response cache. Needs the header `X-Admin-Token: <CACHE_ADMIN_TOKEN>`. Returns 404 if `CACHE_ADMIN_TOKEN` isn't set |
+| `GET /logs` | Returns every record in the server's `logs/runs.jsonl` as a JSON list. Same `X-Admin-Token` protection. On Render this is how the tests read the log, since the file is on the server |
 
 **The first request after a quiet spell is slow.** The free tier puts the
 service to sleep after about 15 minutes with no requests. The next request

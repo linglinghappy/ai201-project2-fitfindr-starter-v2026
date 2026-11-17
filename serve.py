@@ -238,6 +238,26 @@ def cache_clear():
     return jsonify({"cleared": cache.clear()})
 
 
+@app.get("/logs")
+def logs():
+    """
+    Capstone: read back logs/runs.jsonl, so the tests can score the deployed
+    service. On Render that file is on the server, not on my laptop.
+
+    Same protection as /cache/clear: needs X-Admin-Token, and is switched off
+    if CACHE_ADMIN_TOKEN isn't set, because the log holds what people asked.
+    The file is wiped when Render restarts, so it only covers this run of the
+    service.
+    """
+    token = os.getenv("CACHE_ADMIN_TOKEN")
+    if not token:
+        return jsonify({"error": "Not enabled. Set CACHE_ADMIN_TOKEN to use it."}), 404
+    if request.headers.get("X-Admin-Token") != token:
+        return jsonify({"error": "Wrong or missing X-Admin-Token header."}), 403
+    lines = LOG_FILE.read_text(encoding="utf-8").splitlines() if LOG_FILE.exists() else []
+    return jsonify([json.loads(line) for line in lines if line.strip()])
+
+
 if __name__ == "__main__":
     # PORT and 0.0.0.0 are not decoration. A host tells you which port to
     # listen on through PORT, and it reaches your process from outside the
