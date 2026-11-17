@@ -650,3 +650,151 @@ and a cache hit.
 about 15, and a route to empty the cache between trials about 15. That is
 under the 90-minute limit. The rest of the unit is the deployment, the
 testing and the write-up.
+
+**Running It**
+
+**Path A: hosted.** The service runs on Render's free tier at
+**https://fitfindr-hefr.onrender.com**, started with
+`gunicorn serve:app --timeout 120`. Everything needed to deploy it again, or
+run it on your own machine, is in [RUNNING.md](RUNNING.md): the Render
+settings and environment variables, the Python version, the exact package
+versions I tested with, and the local start command.
+
+I tested RUNNING.md by cloning the repo into a new folder and following it
+step by step. It failed twice, and both fixes are now in RUNNING.md:
+`python3` on my Mac is 3.15.2, which the packages don't support, so the venv
+has to be built with `python3.13`; and `curl` got nothing back because I'd
+stopped the server by typing in its terminal, so the server and the request
+need two terminals.
+
+**Instrumentation**
+
+Every `/ask` request writes exactly one JSON record, from `serve.py::log_run`,
+to `logs/runs.jsonl` and to stdout (on Render, stdout is the dashboard's
+**Logs** page, because the file is wiped on every restart). That includes
+requests that fail: a 400 for a bad body, a 500 if the agent crashes, and a
+run that ends with `session["error"]`.
+
+| Field | What it holds |
+|---|---|
+| `timestamp` | when the request finished, UTC |
+| `query` | what came in (`null` if the body had no query) |
+| `wardrobe` | `"default"` (the example wardrobe) or `"custom"` (sent in the request) |
+| `cache_key` | the response-cache key: a hash of the normalised query + wardrobe |
+| `status` | the HTTP status sent back: 200, 400 or 500 |
+| `cache_hit` | `true` if the answer came from the response cache |
+| `duration_ms` | server-side time for the whole request, in ms |
+| `model_calls` | model calls made for this request (0 on a cache hit) |
+| `prompt_tokens`, `output_tokens` | tokens the Gemini API reported for this request |
+| `selected_item` | what came out: the id of the listing the agent picked |
+| `error` | the error message, if the run failed or was rejected; otherwise `null` |
+| `timings_ms` | time of each stage: `parse_query`, `search_listings`, `suggest_outfit`, `create_fit_card` (`null` on a cache hit or a 400, since no stage ran) |
+
+`model_calls` and the token counts come from `generate.py`'s counters, read
+before and after `run_agent()`. Those counters are for the whole process, so
+the difference is this request's share. That is only true because `serve.py`
+runs one request at a time.
+
+**Ten runs**, local, from `measure_cost.py` (`results/cost_2026-11-11_2044.md`).
+Ten different queries, all cache misses:
+
+```json
+{"timestamp": "2026-11-12T02:43:39+00:00", "query": "vintage graphic tee under $30", "wardrobe": "default", "cache_key": "71a70d4fe1c47a7f", "status": 200, "cache_hit": false, "duration_ms": 2751, "model_calls": 2, "prompt_tokens": 392, "output_tokens": 138, "selected_item": "lst_002", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 584, "suggest_outfit": 1606, "create_fit_card": 559}}
+{"timestamp": "2026-11-12T02:43:41+00:00", "query": "90s track jacket size M", "wardrobe": "default", "cache_key": "1b9040f5cb3a023a", "status": 200, "cache_hit": false, "duration_ms": 2271, "model_calls": 2, "prompt_tokens": 396, "output_tokens": 132, "selected_item": "lst_004", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 354, "suggest_outfit": 535, "create_fit_card": 1381}}
+{"timestamp": "2026-11-12T02:43:43+00:00", "query": "corduroy pants under $40", "wardrobe": "default", "cache_key": "d827b0ae616f7e5b", "status": 200, "cache_hit": false, "duration_ms": 1874, "model_calls": 2, "prompt_tokens": 426, "output_tokens": 175, "selected_item": "lst_005", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 311, "suggest_outfit": 851, "create_fit_card": 711}}
+{"timestamp": "2026-11-12T02:43:45+00:00", "query": "platform sneakers under $50", "wardrobe": "default", "cache_key": "e23c70a35fc83517", "status": 200, "cache_hit": false, "duration_ms": 1740, "model_calls": 2, "prompt_tokens": 400, "output_tokens": 149, "selected_item": "lst_019", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 338, "suggest_outfit": 627, "create_fit_card": 773}}
+{"timestamp": "2026-11-12T02:43:46+00:00", "query": "leather belt", "wardrobe": "default", "cache_key": "37d8a549fc829de4", "status": 200, "cache_hit": false, "duration_ms": 1445, "model_calls": 2, "prompt_tokens": 384, "output_tokens": 135, "selected_item": "lst_014", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 334, "suggest_outfit": 571, "create_fit_card": 539}}
+{"timestamp": "2026-11-12T02:43:48+00:00", "query": "linen blazer under $45", "wardrobe": "default", "cache_key": "8a77873c02bdb4db", "status": 200, "cache_hit": false, "duration_ms": 2110, "model_calls": 2, "prompt_tokens": 414, "output_tokens": 166, "selected_item": "lst_018", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 325, "suggest_outfit": 1189, "create_fit_card": 593}}
+{"timestamp": "2026-11-12T02:43:51+00:00", "query": "chelsea boots", "wardrobe": "default", "cache_key": "b801f7b57bb9c113", "status": 200, "cache_hit": false, "duration_ms": 2453, "model_calls": 2, "prompt_tokens": 502, "output_tokens": 253, "selected_item": "lst_028", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 306, "suggest_outfit": 1403, "create_fit_card": 742}}
+{"timestamp": "2026-11-12T02:44:38+00:00", "query": "bucket hat", "wardrobe": "default", "cache_key": "a8523a0c363a20a4", "status": 200, "cache_hit": false, "duration_ms": 46991, "model_calls": 2, "prompt_tokens": 402, "output_tokens": 139, "selected_item": "lst_034", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 311, "suggest_outfit": 509, "create_fit_card": 46169}}
+{"timestamp": "2026-11-12T02:44:40+00:00", "query": "knit cardigan under $40", "wardrobe": "default", "cache_key": "7c782dd7edd75898", "status": 200, "cache_hit": false, "duration_ms": 2110, "model_calls": 2, "prompt_tokens": 442, "output_tokens": 187, "selected_item": "lst_008", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 432, "suggest_outfit": 1026, "create_fit_card": 650}}
+{"timestamp": "2026-11-12T02:44:42+00:00", "query": "denim shorts under $30", "wardrobe": "default", "cache_key": "cfd99a7dfafb82ec", "status": 200, "cache_hit": false, "duration_ms": 2234, "model_calls": 2, "prompt_tokens": 383, "output_tokens": 140, "selected_item": "lst_016", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 320, "suggest_outfit": 652, "create_fit_card": 1262}}
+```
+
+**Two failures** from the same session. An empty body, rejected with a 400,
+and a query that matched nothing, which stopped before the model and set
+`error`:
+
+```json
+{"timestamp": "2026-11-12T02:44:42+00:00", "query": null, "wardrobe": null, "status": 400, "cache_hit": false, "duration_ms": 0, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "selected_item": null, "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}", "timings_ms": null}
+{"timestamp": "2026-11-12T02:44:43+00:00", "query": "purple ballgown size XXS under $5", "wardrobe": "default", "cache_key": "b1aa1c40e6fa33c6", "status": 200, "cache_hit": false, "duration_ms": 351, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "selected_item": null, "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.", "timings_ms": {"parse_query": 0, "search_listings": 351}}
+```
+
+**Two runs on Render**, from the dashboard's Logs, the first request after
+deploying. The same query twice: a miss, then a cache hit:
+
+```json
+{"timestamp": "2026-11-17T05:07:06+00:00", "query": "leather belt", "wardrobe": "default", "cache_key": "37d8a549fc829de4", "status": 200, "cache_hit": false, "duration_ms": 24039, "model_calls": 2, "prompt_tokens": 493, "output_tokens": 242, "selected_item": "lst_014", "error": null, "timings_ms": {"parse_query": 0, "search_listings": 12480, "suggest_outfit": 10863, "create_fit_card": 695}}
+{"timestamp": "2026-11-17T05:08:18+00:00", "query": "leather belt", "wardrobe": "default", "cache_key": "37d8a549fc829de4", "status": 200, "cache_hit": true, "duration_ms": 1, "model_calls": 0, "prompt_tokens": 0, "output_tokens": 0, "selected_item": "lst_014", "error": null, "timings_ms": null}
+```
+
+**What It Costs**
+
+**One run costs about 576 tokens: 414 in and 161 out, over 2 model calls.**
+Measured, not taken from a pricing page.
+
+*How I measured it:* `measure_cost.py` sends 10 different queries to the
+service running locally with `AI201_CACHE=0`. Each query picks a different
+listing, so none can be a cache hit. It reads the 10 records back from
+`logs/runs.jsonl` and averages them. The token counts are what the Gemini API
+reported for each call (`response.usage_metadata`, summed by
+`generate.py::token_counts`).
+
+| Measure (10 runs, all misses) | Average | Min | Max |
+|---|---|---|---|
+| prompt tokens | 414.1 | 383 | 502 |
+| output tokens | 161.4 | 132 | 253 |
+| total tokens | 575.5 | 519 | 755 |
+| model calls | 2.0 | 2 | 2 |
+| time (`duration_ms`) | 6,598 ms | 1,445 ms | 46,991 ms |
+
+**The time needs a second look.** The median is **2,172 ms**, but the average
+is 6,598 ms because of one run, "bucket hat", at 46,991 ms. 46,169 ms of that
+was `create_fit_card` waiting, not working. The free Gemini tier allows **15
+model calls a minute**. The first seven queries used 14 calls in 12 seconds;
+"bucket hat"'s first call was the 15th, and its second had to wait for the
+oldest call to be a minute old. `generate.py` waits on purpose rather than
+getting a 429. So on the free tier, **at most about 7 uncached runs fit in a
+minute**, and the 8th waits most of a minute. A cache hit makes no model call,
+so it never waits for this.
+
+A cache hit costs **0 tokens, 0 model calls, and about 1 ms** on the server
+(1 ms on Render too, in the log above).
+
+*Money:* I'm on Gemini's free tier, so the actual spend is **$0**. The real
+limits are the 15-calls-a-minute rate and the free daily allowance.
+
+*A hundred runs a day:*
+
+| | Tokens a day | Model calls a day |
+|---|---|---|
+| No cache (every run a miss) | 100 × 575.5 = **57,550** (41,410 in + 16,140 out) | 200 |
+| With the cache, at hit rate *h* | 57,550 × (1 − *h*) | 200 × (1 − *h*) |
+| e.g. *h* = 30% | 40,285 | 140 |
+
+The hit rate is a guess until it's measured. I'll fill in a measured one from
+the test runs, not an estimate. One more limit matters more than the total: if
+the 100 runs come in bursts, any minute with more than about 7 uncached runs
+makes people wait. The cache helps there too, because repeated questions don't
+use model calls.
+
+**Latency breakdown (stretch).** Where the time goes in one uncached run,
+averaged over the 9 runs that didn't wait for the rate limit:
+
+| Stage | Average | Share |
+|---|---|---|
+| `parse_query` | 0 ms | 0% |
+| `search_listings` (through MCP) | 367 ms | 17% |
+| `suggest_outfit` (model call) | 940 ms | 45% |
+| `create_fit_card` (model call) | 801 ms | 38% |
+| **total** | **2,110 ms** | |
+
+The two model calls are **83%** of an uncached run, and a cache hit skips both.
+Search is fast in itself (40 listings), but going through MCP starts a new
+Python process every time, which is most of its 367 ms.
+
+On Render the first request after deploying took **24,039 ms**:
+`search_listings` 12,480 ms and `suggest_outfit` 10,863 ms, but
+`create_fit_card` only 695 ms. My guess is a cold start: the first MCP process
+on Render's small CPU, and the first Gemini client. The test runs will show
+whether later Render runs are faster.
