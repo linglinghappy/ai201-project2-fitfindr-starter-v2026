@@ -1,0 +1,1495 @@
+[
+  {
+    "scores": {
+      "C1": 5,
+      "C2": 1,
+      "C3": 5,
+      "C4": 3,
+      "C5": [
+        18,
+        18,
+        18
+      ]
+    },
+    "hit_ms": [
+      1,
+      1,
+      0,
+      0,
+      1
+    ],
+    "sent": [
+      {
+        "kind": "first",
+        "query": "vintage graphic tee under $30",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_002",
+        "fit_card": "Living out my early 2000s pop star dreams in this butterfly baby tee. 🦋✨ Grab this absolute steal for just $18 on my Depop before I change my mind and keep it! Two ways to style it: bagged-out denim for casual days, or combat boots and khaki trousers for an edgy contrast.",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "90s track jacket size M",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_004",
+        "fit_card": "Channeling peak 90s athletic energy with this navy and white stripe track jacket. Style it casually with baggy denim or layer it over a grey crewneck for that effortless streetwear look. Grab this gem for $45 over on my Poshmark closet!",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "leather belt",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_014",
+        "fit_card": "Scored this gorgeous braided brown leather belt on thredUp for just $12! It's the ultimate finishing touch for everything from earthy streetwear to vintage Western fits. 🤎✨",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "chelsea boots",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_028",
+        "fit_card": "Scored these tan suede Chelsea boots for just $44 on Poshmark! Obsessed with how they elevate my oversized crewneck streetwear looks and khaki trouser fits. Head to my closet to shop!",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "denim shorts under $30",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_016",
+        "fit_card": "Can't decide between a casual summer vibe or edgy warm-weather style with these high-waisted denim shorts? Grab this thrifted staple for just $24 over on my Poshmark closet and let's build both! ✨👖",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "vintage graphic tee under $30",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_002",
+        "fit_card": "Living out my early 2000s pop star dreams in this butterfly baby tee. 🦋✨ Grab this absolute steal for just $18 on my Depop before I change my mind and keep it! Two ways to style it: bagged-out denim for casual days, or combat boots and khaki trousers for an edgy contrast.",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "90s track jacket size M",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_004",
+        "fit_card": "Channeling peak 90s athletic energy with this navy and white stripe track jacket. Style it casually with baggy denim or layer it over a grey crewneck for that effortless streetwear look. Grab this gem for $45 over on my Poshmark closet!",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "leather belt",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_014",
+        "fit_card": "Scored this gorgeous braided brown leather belt on thredUp for just $12! It's the ultimate finishing touch for everything from earthy streetwear to vintage Western fits. 🤎✨",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "chelsea boots",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_028",
+        "fit_card": "Scored these tan suede Chelsea boots for just $44 on Poshmark! Obsessed with how they elevate my oversized crewneck streetwear looks and khaki trouser fits. Head to my closet to shop!",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "denim shorts under $30",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_016",
+        "fit_card": "Can't decide between a casual summer vibe or edgy warm-weather style with these high-waisted denim shorts? Grab this thrifted staple for just $24 over on my Poshmark closet and let's build both! ✨👖",
+        "error": null
+      },
+      {
+        "kind": "error_first",
+        "query": "purple ballgown size XXS under $5",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5."
+      },
+      {
+        "kind": "error_second",
+        "query": "purple ballgown size XXS under $5",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5."
+      },
+      {
+        "kind": "error_first",
+        "query": "gold sequin cape under $3",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3."
+      },
+      {
+        "kind": "error_second",
+        "query": "gold sequin cape under $3",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3."
+      },
+      {
+        "kind": "error_first",
+        "query": "wedding dress size XXS",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one."
+      },
+      {
+        "kind": "error_second",
+        "query": "wedding dress size XXS",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one."
+      },
+      {
+        "kind": "bad_empty_body",
+        "query": null,
+        "status": 400,
+        "cache_hit": null,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}"
+      },
+      {
+        "kind": "bad_no_query",
+        "query": null,
+        "status": 400,
+        "cache_hit": null,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}"
+      }
+    ],
+    "records": [
+      {
+        "cache_hit": false,
+        "cache_key": "71a70d4fe1c47a7f",
+        "duration_ms": 20540,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 157,
+        "prompt_tokens": 397,
+        "query": "vintage graphic tee under $30",
+        "selected_item": "lst_002",
+        "status": 200,
+        "timestamp": "2026-11-17T06:58:30+00:00",
+        "timings_ms": {
+          "create_fit_card": 916,
+          "parse_query": 0,
+          "search_listings": 11331,
+          "suggest_outfit": 8291
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "1b9040f5cb3a023a",
+        "duration_ms": 6990,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 164,
+        "prompt_tokens": 424,
+        "query": "90s track jacket size M",
+        "selected_item": "lst_004",
+        "status": 200,
+        "timestamp": "2026-11-17T06:58:37+00:00",
+        "timings_ms": {
+          "create_fit_card": 1569,
+          "parse_query": 0,
+          "search_listings": 4593,
+          "suggest_outfit": 827
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "37d8a549fc829de4",
+        "duration_ms": 19731,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 131,
+        "prompt_tokens": 394,
+        "query": "leather belt",
+        "selected_item": "lst_014",
+        "status": 200,
+        "timestamp": "2026-11-17T06:58:57+00:00",
+        "timings_ms": {
+          "create_fit_card": 633,
+          "parse_query": 0,
+          "search_listings": 4621,
+          "suggest_outfit": 14476
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b801f7b57bb9c113",
+        "duration_ms": 5856,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 130,
+        "prompt_tokens": 389,
+        "query": "chelsea boots",
+        "selected_item": "lst_028",
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:03+00:00",
+        "timings_ms": {
+          "create_fit_card": 769,
+          "parse_query": 0,
+          "search_listings": 4455,
+          "suggest_outfit": 631
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "cfd99a7dfafb82ec",
+        "duration_ms": 6956,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 151,
+        "prompt_tokens": 408,
+        "query": "denim shorts under $30",
+        "selected_item": "lst_016",
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:10+00:00",
+        "timings_ms": {
+          "create_fit_card": 827,
+          "parse_query": 0,
+          "search_listings": 5270,
+          "suggest_outfit": 858
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "71a70d4fe1c47a7f",
+        "duration_ms": 1,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "vintage graphic tee under $30",
+        "selected_item": "lst_002",
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:10+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "1b9040f5cb3a023a",
+        "duration_ms": 1,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "90s track jacket size M",
+        "selected_item": "lst_004",
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:11+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "37d8a549fc829de4",
+        "duration_ms": 0,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "leather belt",
+        "selected_item": "lst_014",
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:11+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "b801f7b57bb9c113",
+        "duration_ms": 0,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "chelsea boots",
+        "selected_item": "lst_028",
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:11+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "cfd99a7dfafb82ec",
+        "duration_ms": 1,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "denim shorts under $30",
+        "selected_item": "lst_016",
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:11+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b1aa1c40e6fa33c6",
+        "duration_ms": 4485,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "purple ballgown size XXS under $5",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:16+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4484
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b1aa1c40e6fa33c6",
+        "duration_ms": 4816,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "purple ballgown size XXS under $5",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:21+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4816
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "743b178e16d6aa53",
+        "duration_ms": 4388,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "gold sequin cape under $3",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:25+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4387
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "743b178e16d6aa53",
+        "duration_ms": 4675,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "gold sequin cape under $3",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:30+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4675
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "c050c1037db0e3b9",
+        "duration_ms": 4878,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "wedding dress size XXS",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:35+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4878
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "c050c1037db0e3b9",
+        "duration_ms": 4631,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "wedding dress size XXS",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T06:59:40+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4631
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "duration_ms": 0,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": null,
+        "selected_item": null,
+        "status": 400,
+        "timestamp": "2026-11-17T06:59:41+00:00",
+        "timings_ms": null,
+        "wardrobe": null
+      },
+      {
+        "cache_hit": false,
+        "duration_ms": 0,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": null,
+        "selected_item": null,
+        "status": 400,
+        "timestamp": "2026-11-17T06:59:41+00:00",
+        "timings_ms": null,
+        "wardrobe": null
+      }
+    ]
+  },
+  {
+    "scores": {
+      "C1": 4,
+      "C2": 0.5,
+      "C3": 4,
+      "C4": 3,
+      "C5": [
+        18,
+        18,
+        18
+      ]
+    },
+    "hit_ms": [
+      1,
+      0,
+      0,
+      1
+    ],
+    "sent": [
+      {
+        "kind": "first",
+        "query": "vintage graphic tee under $30",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_002",
+        "fit_card": "Butterflies & Y2K nostalgia 🦋 Slayed two ways: streetwear with baggy denim or chill earth tones with khaki trousers. Grab this baby tee for $18 on my Depop before she’s gone!",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "90s track jacket size M",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_004",
+        "fit_card": "Mastering off-duty model chic is easy with this 90s track jacket. Layer it over wide-leg trousers or baggy denim for instant sporty-cool vibes. Grab it on Poshmark for just $45 before it’s gone! 🤍✨",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "leather belt",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_014",
+        "fit_card": "Found this $12 braided brown leather belt on thredUp and she does *not* miss. Perfect for anchoring baggy denim or effortless earth-toned streetwear. Two ways to style it—which vibe are you taking?",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "chelsea boots",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_028",
+        "fit_card": null,
+        "error": "The model couldn't be reached, so the outfit and caption steps didn't run. The search worked — 1 listing(s) were found. Check GEMINI_API_KEY in your .env, then run the same query again.\nWhat the service said: Couldn't reach the model: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}"
+      },
+      {
+        "kind": "first",
+        "query": "denim shorts under $30",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_016",
+        "fit_card": "Ultimate summer staple secured! 👖 Style these high-waisted denim shorts casually with chunky sneakers or add some edge with combat boots and a hoodie. Grab this thrifted pair for just $24 over on my Poshmark closet! ✨",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "vintage graphic tee under $30",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_002",
+        "fit_card": "Butterflies & Y2K nostalgia 🦋 Slayed two ways: streetwear with baggy denim or chill earth tones with khaki trousers. Grab this baby tee for $18 on my Depop before she’s gone!",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "90s track jacket size M",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_004",
+        "fit_card": "Mastering off-duty model chic is easy with this 90s track jacket. Layer it over wide-leg trousers or baggy denim for instant sporty-cool vibes. Grab it on Poshmark for just $45 before it’s gone! 🤍✨",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "leather belt",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_014",
+        "fit_card": "Found this $12 braided brown leather belt on thredUp and she does *not* miss. Perfect for anchoring baggy denim or effortless earth-toned streetwear. Two ways to style it—which vibe are you taking?",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "chelsea boots",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_028",
+        "fit_card": "Scored these dreamy tan suede Chelsea boots for just $44 on Poshmark! Obsessed with styling them with baggy denim and a grey crewneck for that effortless vintage vibe. Find them in my closet now! ✨🤎",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "denim shorts under $30",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_016",
+        "fit_card": "Ultimate summer staple secured! 👖 Style these high-waisted denim shorts casually with chunky sneakers or add some edge with combat boots and a hoodie. Grab this thrifted pair for just $24 over on my Poshmark closet! ✨",
+        "error": null
+      },
+      {
+        "kind": "error_first",
+        "query": "purple ballgown size XXS under $5",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5."
+      },
+      {
+        "kind": "error_second",
+        "query": "purple ballgown size XXS under $5",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5."
+      },
+      {
+        "kind": "error_first",
+        "query": "gold sequin cape under $3",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3."
+      },
+      {
+        "kind": "error_second",
+        "query": "gold sequin cape under $3",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3."
+      },
+      {
+        "kind": "error_first",
+        "query": "wedding dress size XXS",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one."
+      },
+      {
+        "kind": "error_second",
+        "query": "wedding dress size XXS",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one."
+      },
+      {
+        "kind": "bad_empty_body",
+        "query": null,
+        "status": 400,
+        "cache_hit": null,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}"
+      },
+      {
+        "kind": "bad_no_query",
+        "query": null,
+        "status": 400,
+        "cache_hit": null,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}"
+      }
+    ],
+    "records": [
+      {
+        "cache_hit": false,
+        "cache_key": "71a70d4fe1c47a7f",
+        "duration_ms": 6698,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 162,
+        "prompt_tokens": 426,
+        "query": "vintage graphic tee under $30",
+        "selected_item": "lst_002",
+        "status": 200,
+        "timestamp": "2026-11-17T07:00:53+00:00",
+        "timings_ms": {
+          "create_fit_card": 1076,
+          "parse_query": 0,
+          "search_listings": 4474,
+          "suggest_outfit": 1146
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "1b9040f5cb3a023a",
+        "duration_ms": 6231,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 141,
+        "prompt_tokens": 399,
+        "query": "90s track jacket size M",
+        "selected_item": "lst_004",
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:00+00:00",
+        "timings_ms": {
+          "create_fit_card": 773,
+          "parse_query": 0,
+          "search_listings": 4379,
+          "suggest_outfit": 1079
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "37d8a549fc829de4",
+        "duration_ms": 7169,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 139,
+        "prompt_tokens": 395,
+        "query": "leather belt",
+        "selected_item": "lst_014",
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:07+00:00",
+        "timings_ms": {
+          "create_fit_card": 742,
+          "parse_query": 0,
+          "search_listings": 4568,
+          "suggest_outfit": 1858
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b801f7b57bb9c113",
+        "duration_ms": 10972,
+        "error": "The model couldn't be reached, so the outfit and caption steps didn't run. The search worked — 1 listing(s) were found. Check GEMINI_API_KEY in your .env, then run the same query again.\nWhat the service said: Couldn't reach the model: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}",
+        "model_calls": 1,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "chelsea boots",
+        "selected_item": "lst_028",
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:18+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4388
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "cfd99a7dfafb82ec",
+        "duration_ms": 5694,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 179,
+        "prompt_tokens": 437,
+        "query": "denim shorts under $30",
+        "selected_item": "lst_016",
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:24+00:00",
+        "timings_ms": {
+          "create_fit_card": 703,
+          "parse_query": 0,
+          "search_listings": 4220,
+          "suggest_outfit": 770
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "71a70d4fe1c47a7f",
+        "duration_ms": 1,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "vintage graphic tee under $30",
+        "selected_item": "lst_002",
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:24+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "1b9040f5cb3a023a",
+        "duration_ms": 0,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "90s track jacket size M",
+        "selected_item": "lst_004",
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:25+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "37d8a549fc829de4",
+        "duration_ms": 0,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "leather belt",
+        "selected_item": "lst_014",
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:25+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b801f7b57bb9c113",
+        "duration_ms": 6319,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 155,
+        "prompt_tokens": 409,
+        "query": "chelsea boots",
+        "selected_item": "lst_028",
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:31+00:00",
+        "timings_ms": {
+          "create_fit_card": 605,
+          "parse_query": 0,
+          "search_listings": 4558,
+          "suggest_outfit": 1154
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "cfd99a7dfafb82ec",
+        "duration_ms": 1,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "denim shorts under $30",
+        "selected_item": "lst_016",
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:32+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b1aa1c40e6fa33c6",
+        "duration_ms": 4272,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "purple ballgown size XXS under $5",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:36+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4272
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b1aa1c40e6fa33c6",
+        "duration_ms": 4900,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "purple ballgown size XXS under $5",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:41+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4899
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "743b178e16d6aa53",
+        "duration_ms": 4324,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "gold sequin cape under $3",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:46+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4323
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "743b178e16d6aa53",
+        "duration_ms": 4517,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "gold sequin cape under $3",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:50+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4516
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "c050c1037db0e3b9",
+        "duration_ms": 4222,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "wedding dress size XXS",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:55+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4221
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "c050c1037db0e3b9",
+        "duration_ms": 4407,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "wedding dress size XXS",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:01:59+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4407
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "duration_ms": 0,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": null,
+        "selected_item": null,
+        "status": 400,
+        "timestamp": "2026-11-17T07:02:00+00:00",
+        "timings_ms": null,
+        "wardrobe": null
+      },
+      {
+        "cache_hit": false,
+        "duration_ms": 0,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": null,
+        "selected_item": null,
+        "status": 400,
+        "timestamp": "2026-11-17T07:02:00+00:00",
+        "timings_ms": null,
+        "wardrobe": null
+      }
+    ]
+  },
+  {
+    "scores": {
+      "C1": 5,
+      "C2": 1,
+      "C3": 5,
+      "C4": 3,
+      "C5": [
+        18,
+        18,
+        18
+      ]
+    },
+    "hit_ms": [
+      1,
+      1,
+      1,
+      2,
+      0
+    ],
+    "sent": [
+      {
+        "kind": "first",
+        "query": "vintage graphic tee under $30",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_002",
+        "fit_card": "Living out my early 2000s pop star dreams in this butterfly print Y2K baby tee 🦋 Pair it with baggy denim or wide-leg trousers for the ultimate off-duty model vibe. Snag this rare find on my Depop for just $18!",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "90s track jacket size M",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_004",
+        "fit_card": "Channeling total retro-athletic energy with this 90s navy and white track jacket! Grab it for just $45 over on my Poshmark. Style it casually with baggy denim or dress it up with khaki trousers for that effortless sporty vibe. ✨👟",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "leather belt",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_014",
+        "fit_card": "Scored this braided brown leather belt on thredUp for just $12! It's the ultimate finishing touch for everything from baggy denim to khaki streetwear. Such a versatile vintage find. ✨🛒",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "chelsea boots",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_028",
+        "fit_card": "Scored these tan suede Chelsea boots for just $44 on Poshmark and I'm obsessed! They look so good styled casually with khaki trousers and a grey crewneck, or contrasted with dark denim and a black jacket. Find them in my closet now!",
+        "error": null
+      },
+      {
+        "kind": "first",
+        "query": "denim shorts under $30",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": "lst_016",
+        "fit_card": "Chasing that effortless off-duty look? Grab these high-waisted denim shorts for just $24 over on my Poshmark! Style them edgy with combat boots for summer or cozy with an oversized crewneck when the weather dips. 🖤✨",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "vintage graphic tee under $30",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_002",
+        "fit_card": "Living out my early 2000s pop star dreams in this butterfly print Y2K baby tee 🦋 Pair it with baggy denim or wide-leg trousers for the ultimate off-duty model vibe. Snag this rare find on my Depop for just $18!",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "90s track jacket size M",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_004",
+        "fit_card": "Channeling total retro-athletic energy with this 90s navy and white track jacket! Grab it for just $45 over on my Poshmark. Style it casually with baggy denim or dress it up with khaki trousers for that effortless sporty vibe. ✨👟",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "leather belt",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_014",
+        "fit_card": "Scored this braided brown leather belt on thredUp for just $12! It's the ultimate finishing touch for everything from baggy denim to khaki streetwear. Such a versatile vintage find. ✨🛒",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "chelsea boots",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_028",
+        "fit_card": "Scored these tan suede Chelsea boots for just $44 on Poshmark and I'm obsessed! They look so good styled casually with khaki trousers and a grey crewneck, or contrasted with dark denim and a black jacket. Find them in my closet now!",
+        "error": null
+      },
+      {
+        "kind": "second",
+        "query": "denim shorts under $30",
+        "status": 200,
+        "cache_hit": true,
+        "selected_item": "lst_016",
+        "fit_card": "Chasing that effortless off-duty look? Grab these high-waisted denim shorts for just $24 over on my Poshmark! Style them edgy with combat boots for summer or cozy with an oversized crewneck when the weather dips. 🖤✨",
+        "error": null
+      },
+      {
+        "kind": "error_first",
+        "query": "purple ballgown size XXS under $5",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5."
+      },
+      {
+        "kind": "error_second",
+        "query": "purple ballgown size XXS under $5",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5."
+      },
+      {
+        "kind": "error_first",
+        "query": "gold sequin cape under $3",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3."
+      },
+      {
+        "kind": "error_second",
+        "query": "gold sequin cape under $3",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3."
+      },
+      {
+        "kind": "error_first",
+        "query": "wedding dress size XXS",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one."
+      },
+      {
+        "kind": "error_second",
+        "query": "wedding dress size XXS",
+        "status": 200,
+        "cache_hit": false,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one."
+      },
+      {
+        "kind": "bad_empty_body",
+        "query": null,
+        "status": 400,
+        "cache_hit": null,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}"
+      },
+      {
+        "kind": "bad_no_query",
+        "query": null,
+        "status": 400,
+        "cache_hit": null,
+        "selected_item": null,
+        "fit_card": null,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}"
+      }
+    ],
+    "records": [
+      {
+        "cache_hit": false,
+        "cache_key": "71a70d4fe1c47a7f",
+        "duration_ms": 5916,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 143,
+        "prompt_tokens": 394,
+        "query": "vintage graphic tee under $30",
+        "selected_item": "lst_002",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:12+00:00",
+        "timings_ms": {
+          "create_fit_card": 735,
+          "parse_query": 0,
+          "search_listings": 4427,
+          "suggest_outfit": 753
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "1b9040f5cb3a023a",
+        "duration_ms": 6572,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 179,
+        "prompt_tokens": 437,
+        "query": "90s track jacket size M",
+        "selected_item": "lst_004",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:18+00:00",
+        "timings_ms": {
+          "create_fit_card": 600,
+          "parse_query": 0,
+          "search_listings": 5176,
+          "suggest_outfit": 795
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "37d8a549fc829de4",
+        "duration_ms": 6651,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 135,
+        "prompt_tokens": 395,
+        "query": "leather belt",
+        "selected_item": "lst_014",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:25+00:00",
+        "timings_ms": {
+          "create_fit_card": 949,
+          "parse_query": 0,
+          "search_listings": 4126,
+          "suggest_outfit": 1575
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b801f7b57bb9c113",
+        "duration_ms": 9236,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 200,
+        "prompt_tokens": 446,
+        "query": "chelsea boots",
+        "selected_item": "lst_028",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:35+00:00",
+        "timings_ms": {
+          "create_fit_card": 2730,
+          "parse_query": 0,
+          "search_listings": 4246,
+          "suggest_outfit": 2259
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "cfd99a7dfafb82ec",
+        "duration_ms": 9226,
+        "error": null,
+        "model_calls": 2,
+        "output_tokens": 134,
+        "prompt_tokens": 389,
+        "query": "denim shorts under $30",
+        "selected_item": "lst_016",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:44+00:00",
+        "timings_ms": {
+          "create_fit_card": 3515,
+          "parse_query": 0,
+          "search_listings": 4827,
+          "suggest_outfit": 884
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "71a70d4fe1c47a7f",
+        "duration_ms": 1,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "vintage graphic tee under $30",
+        "selected_item": "lst_002",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:44+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "1b9040f5cb3a023a",
+        "duration_ms": 1,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "90s track jacket size M",
+        "selected_item": "lst_004",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:45+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "37d8a549fc829de4",
+        "duration_ms": 1,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "leather belt",
+        "selected_item": "lst_014",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:45+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "b801f7b57bb9c113",
+        "duration_ms": 2,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "chelsea boots",
+        "selected_item": "lst_028",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:45+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": true,
+        "cache_key": "cfd99a7dfafb82ec",
+        "duration_ms": 0,
+        "error": null,
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "denim shorts under $30",
+        "selected_item": "lst_016",
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:45+00:00",
+        "timings_ms": null,
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b1aa1c40e6fa33c6",
+        "duration_ms": 4611,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "purple ballgown size XXS under $5",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:50+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4611
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "b1aa1c40e6fa33c6",
+        "duration_ms": 4259,
+        "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "purple ballgown size XXS under $5",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:54+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4258
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "743b178e16d6aa53",
+        "duration_ms": 4367,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "gold sequin cape under $3",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:03:59+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4367
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "743b178e16d6aa53",
+        "duration_ms": 4735,
+        "error": "Nothing in the listings matched description 'gold sequin cape', under $3.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; raise the price ceiling above $3.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "gold sequin cape under $3",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:04:04+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4734
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "c050c1037db0e3b9",
+        "duration_ms": 4472,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "wedding dress size XXS",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:04:09+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4472
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "cache_key": "c050c1037db0e3b9",
+        "duration_ms": 4596,
+        "error": "Nothing in the listings matched description 'wedding dress', size XXS.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one.",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": "wedding dress size XXS",
+        "selected_item": null,
+        "status": 200,
+        "timestamp": "2026-11-17T07:04:14+00:00",
+        "timings_ms": {
+          "parse_query": 0,
+          "search_listings": 4596
+        },
+        "wardrobe": "default"
+      },
+      {
+        "cache_hit": false,
+        "duration_ms": 0,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": null,
+        "selected_item": null,
+        "status": 400,
+        "timestamp": "2026-11-17T07:04:14+00:00",
+        "timings_ms": null,
+        "wardrobe": null
+      },
+      {
+        "cache_hit": false,
+        "duration_ms": 0,
+        "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}",
+        "model_calls": 0,
+        "output_tokens": 0,
+        "prompt_tokens": 0,
+        "query": null,
+        "selected_item": null,
+        "status": 400,
+        "timestamp": "2026-11-17T07:04:14+00:00",
+        "timings_ms": null,
+        "wardrobe": null
+      }
+    ]
+  }
+]
