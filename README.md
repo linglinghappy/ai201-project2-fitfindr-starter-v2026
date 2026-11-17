@@ -798,3 +798,113 @@ On Render the first request after deploying took **24,039 ms**:
 `create_fit_card` only 695 ms. My guess is a cold start: the first MCP process
 on Render's small CPU, and the first Gemini client. The test runs will show
 whether later Render runs are faster.
+
+**Run Log and Verdicts**
+
+Five criteria from `criteria.md` (C1–C5), three trials each, against the
+deployed service at https://fitfindr-hefr.onrender.com. Nothing was changed
+between trials. Produced by `run_capstone.py::main`. Full output:
+[`results/capstone_2026-11-17_0104_before.md`](results/capstone_2026-11-17_0104_before.md),
+with every response and log record in the `.json` file next to it.
+
+*What each trial runs:* empty the cache (`POST /cache/clear`), then 18
+requests. For C1–C3: 5 queries that reach a fit card, then the same 5 again.
+For C4: 3 queries that match nothing, each sent twice. For C5: 2 bad
+requests (an empty body, and a body with no `query`). The trial is scored
+from the responses and from the log records the server added during it, read
+back with `GET /logs`. Trials are 65 s apart because of the free model tier's
+15 calls a minute.
+
+| Criterion | Target | Run 1 | Run 2 | Run 3 | Verdict |
+|---|---|---|---|---|---|
+| C1. A cache hit doesn't call the model | 5 of 5 | 5/5 | 4/5 | 5/5 | **MISSED** |
+| C2. A cache hit is fast (median `duration_ms`) | ≤ 50 ms | 1 ms | 0.5 ms | 1 ms | MET |
+| C3. A cache hit returns the same answer | 5 of 5 | 5/5 | 4/5 | 5/5 | **MISSED** |
+| C4. A failed run is never saved | 3 of 3 | 3/3 | 3/3 | 3/3 | MET |
+| C5. Every request leaves exactly one log record | 100% of requests | 18/18 | 18/18 | 18/18 | MET |
+
+C1 and C3 are missed because the target has to hold in every trial, and run
+2 came out 4 of 5.
+
+*Real output.* Log records are exactly as the server wrote them
+(`serve.py::log_run`, read back through `serve.py::logs`).
+
+**C1 and C2**, run 1: the 5 second sends. All are `cache_hit: true` with
+`model_calls: 0`, and the durations are 1, 1, 0, 0, 1 ms:
+
+```json
+{"cache_hit": true, "cache_key": "71a70d4fe1c47a7f", "duration_ms": 1, "error": null, "model_calls": 0, "output_tokens": 0, "prompt_tokens": 0, "query": "vintage graphic tee under $30", "selected_item": "lst_002", "status": 200, "timestamp": "2026-11-17T06:59:10+00:00", "timings_ms": null, "wardrobe": "default"}
+{"cache_hit": true, "cache_key": "1b9040f5cb3a023a", "duration_ms": 1, "error": null, "model_calls": 0, "output_tokens": 0, "prompt_tokens": 0, "query": "90s track jacket size M", "selected_item": "lst_004", "status": 200, "timestamp": "2026-11-17T06:59:11+00:00", "timings_ms": null, "wardrobe": "default"}
+{"cache_hit": true, "cache_key": "37d8a549fc829de4", "duration_ms": 0, "error": null, "model_calls": 0, "output_tokens": 0, "prompt_tokens": 0, "query": "leather belt", "selected_item": "lst_014", "status": 200, "timestamp": "2026-11-17T06:59:11+00:00", "timings_ms": null, "wardrobe": "default"}
+{"cache_hit": true, "cache_key": "b801f7b57bb9c113", "duration_ms": 0, "error": null, "model_calls": 0, "output_tokens": 0, "prompt_tokens": 0, "query": "chelsea boots", "selected_item": "lst_028", "status": 200, "timestamp": "2026-11-17T06:59:11+00:00", "timings_ms": null, "wardrobe": "default"}
+{"cache_hit": true, "cache_key": "cfd99a7dfafb82ec", "duration_ms": 1, "error": null, "model_calls": 0, "output_tokens": 0, "prompt_tokens": 0, "query": "denim shorts under $30", "selected_item": "lst_016", "status": 200, "timestamp": "2026-11-17T06:59:11+00:00", "timings_ms": null, "wardrobe": "default"}
+```
+
+**C1 and C3, the miss**, run 2: "chelsea boots", first send and second send.
+The first run failed on a model 503, so there was nothing to save, and the
+second send was a real miss:
+
+```json
+{"cache_hit": false, "cache_key": "b801f7b57bb9c113", "duration_ms": 10972, "error": "The model couldn't be reached, so the outfit and caption steps didn't run. The search worked — 1 listing(s) were found. Check GEMINI_API_KEY in your .env, then run the same query again.\nWhat the service said: Couldn't reach the model: 503 UNAVAILABLE. {'error': {'code': 503, 'message': 'This model is currently experiencing high demand. Spikes in demand are usually temporary. Please try again later.', 'status': 'UNAVAILABLE'}}", "model_calls": 1, "output_tokens": 0, "prompt_tokens": 0, "query": "chelsea boots", "selected_item": "lst_028", "status": 200, "timestamp": "2026-11-17T07:01:18+00:00", "timings_ms": {"parse_query": 0, "search_listings": 4388}, "wardrobe": "default"}
+{"cache_hit": false, "cache_key": "b801f7b57bb9c113", "duration_ms": 6319, "error": null, "model_calls": 2, "output_tokens": 155, "prompt_tokens": 409, "query": "chelsea boots", "selected_item": "lst_028", "status": 200, "timestamp": "2026-11-17T07:01:31+00:00", "timings_ms": {"create_fit_card": 605, "parse_query": 0, "search_listings": 4558, "suggest_outfit": 1154}, "wardrobe": "default"}
+```
+
+**C3**, run 1: the first and second response for "leather belt" (trimmed
+to the fields scored). Same item, same fit card, word for word:
+
+```json
+{"kind": "first", "cache_hit": false, "selected_item": "lst_014", "fit_card": "Scored this gorgeous braided brown leather belt on thredUp for just $12! It's the ultimate finishing touch for everything from earthy streetwear to vintage Western fits. 🤎✨"}
+{"kind": "second", "cache_hit": true, "selected_item": "lst_014", "fit_card": "Scored this gorgeous braided brown leather belt on thredUp for just $12! It's the ultimate finishing touch for everything from earthy streetwear to vintage Western fits. 🤎✨"}
+```
+
+**C4**, run 1: a query that matches nothing, sent twice. Both are
+`cache_hit: false`, so the failure was not saved:
+
+```json
+{"cache_hit": false, "cache_key": "b1aa1c40e6fa33c6", "duration_ms": 4485, "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.", "model_calls": 0, "output_tokens": 0, "prompt_tokens": 0, "query": "purple ballgown size XXS under $5", "selected_item": null, "status": 200, "timestamp": "2026-11-17T06:59:16+00:00", "timings_ms": {"parse_query": 0, "search_listings": 4484}, "wardrobe": "default"}
+{"cache_hit": false, "cache_key": "b1aa1c40e6fa33c6", "duration_ms": 4816, "error": "Nothing in the listings matched description 'purple ballgown', size XXS, under $5.\nThings to change: try broader words — 'jacket' finds more than 'cropped corduroy jacket'; drop the size, or try a neighbouring one; raise the price ceiling above $5.", "model_calls": 0, "output_tokens": 0, "prompt_tokens": 0, "query": "purple ballgown size XXS under $5", "selected_item": null, "status": 200, "timestamp": "2026-11-17T06:59:21+00:00", "timings_ms": {"parse_query": 0, "search_listings": 4816}, "wardrobe": "default"}
+```
+
+**C5**, run 1: 18 requests sent, 18 new log records, all 18 with every
+field. The 2 bad requests, each rejected with a 400 and still logged:
+
+```json
+{"cache_hit": false, "duration_ms": 0, "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}", "model_calls": 0, "output_tokens": 0, "prompt_tokens": 0, "query": null, "selected_item": null, "status": 400, "timestamp": "2026-11-17T06:59:41+00:00", "timings_ms": null, "wardrobe": null}
+{"cache_hit": false, "duration_ms": 0, "error": "Send JSON with a 'query' field, e.g. {\"query\": \"vintage graphic tee under $30\"}", "model_calls": 0, "output_tokens": 0, "prompt_tokens": 0, "query": null, "selected_item": null, "status": 400, "timestamp": "2026-11-17T06:59:41+00:00", "timings_ms": null, "wardrobe": null}
+```
+
+*Diagnosis of the misses (C1 and C3).* Both come from the same one request,
+so they are one problem.
+
+- **Stage: the model call (`generate.py::generate`), not the cache.** In run
+  2, the first "chelsea boots" run reached `suggest_outfit`, and Gemini
+  answered **503 UNAVAILABLE: "This model is currently experiencing high
+  demand. Spikes in demand are usually temporary."**
+- **Mechanism:** `generate.py` retries only rate-limit errors (it looks for
+  "429", "resource exhausted" or "rate limit" in the message). A 503 isn't
+  any of those, so it gave up on the first try and raised `ModelUnavailable`.
+  The run ended with `session["error"]` set and no fit card. The cache then
+  did exactly what C4 asks and **didn't save the failure**. So the second
+  send had nothing to hit: it was a real miss (C1: 4/5), and its fit card had
+  nothing to match (C3: 4/5).
+- **The pattern:** C4 being right is what makes C1 miss. Not saving failures
+  is correct, but it means the hit rate is only as good as the model's
+  uptime: every upstream failure becomes a miss later.
+- One more problem the failed record shows: the error tells the user to
+  "Check GEMINI_API_KEY", which is wrong for a 503. The key was fine.
+
+*Notes on the criteria I met:*
+- **C2 met with a huge margin.** Hits took 0–2 ms against a 50 ms target. I
+  set 50 ms before I'd measured a hit, to leave room for Render's slower
+  machine. It turned out not to need it, so this target is too loose.
+- **C4 and C5 are deterministic.** Neither involves the model, so 3 of 3
+  trials matching is what I expected.
+
+*Something the criteria didn't measure:* on Render, an uncached run takes
+**about 6–9 s** (two in run 1 took about 20 s while the service warmed up),
+and **about 4.5 s of that is `search_listings`**, against
+about 0.4 s on my laptop. Search itself is a loop over 40 listings; the time
+is MCP starting a new Python process for every search on Render's small CPU.
+The two model calls are about 1.1 s and 0.8 s, the same as on my laptop. This
+changes the latency breakdown in What It Costs: on Render, the biggest cost
+of a miss is MCP, not the model. The cache skips both.
