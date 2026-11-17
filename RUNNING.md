@@ -89,11 +89,22 @@ deploy, so the dashboard is the record there; on your own machine, the file is.
 
 ### Run the same service on your own machine
 
+**First, check which Python `python3` is.** It must be 3.11, 3.12 or 3.13:
+
+```bash
+python3 --version
+```
+
+If it says 3.14 or newer, use `python3.13` instead of `python3` in the
+`venv` line below. (No 3.13? Install it from python.org or with
+`brew install python@3.13`.)
+
 ```bash
 git clone https://github.com/linglinghappy/ai201-project2-fitfindr-starter-v2026.git
 cd ai201-project2-fitfindr-starter-v2026
-python3 -m venv .venv
+python3 -m venv .venv           # or: python3.13 -m venv .venv
 source .venv/bin/activate
+python --version                # must be 3.11–3.13
 pip install -r requirements.txt
 cp .env.example .env            # then paste your GEMINI_API_KEY into .env
 python test.py                  # should end with 10 passed
@@ -101,7 +112,8 @@ python test.py                  # should end with 10 passed
 PORT=5050 AI201_CACHE=0 CACHE_ADMIN_TOKEN=pick-a-secret python serve.py
 ```
 
-Then, in a second terminal:
+The server keeps this terminal busy until you press Ctrl-C. **Open a second
+terminal** for the request, and leave the first one alone:
 
 ```bash
 curl -s -X POST http://localhost:5050/ask \
@@ -109,7 +121,17 @@ curl -s -X POST http://localhost:5050/ask \
   -d '{"query": "leather belt"}'
 ```
 
-**Two things that caught me out:**
+**What went wrong when I followed this from a clean clone (and is fixed
+above):**
+
+- **`python3` was Python 3.15.2.** The venv built fine and the packages even
+  installed, but `test.py` failed on the Python version. Fix: delete `.venv`,
+  rebuild it with `python3.13 -m venv .venv`.
+- **`curl` printed nothing and `json.tool` said `Expecting value: line 1
+  column 1`.** The server had been stopped, because I'd used its terminal for
+  the `curl`. Fix: the server in one terminal, `curl` in another.
+
+**Two more things that caught me out earlier:**
 
 - **On macOS, use port 5050, not 5000.** macOS's AirPlay Receiver listens on
   port 5000 and answers with an empty `403` (`Server: AirTunes`), which looks
