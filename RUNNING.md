@@ -4,6 +4,135 @@ Everything about how the starter works and how to use it.
 
 ---
 
+## Capstone — the deployed service (Path A: hosted)
+
+**URL: https://fitfindr-hefr.onrender.com** · platform: **Render**, free web
+service.
+
+### Try it
+
+```bash
+curl -s https://fitfindr-hefr.onrender.com/health
+# {"status":"ok"}
+
+curl -s -X POST https://fitfindr-hefr.onrender.com/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"query": "leather belt"}'
+```
+
+Send the same `/ask` twice. The first answer has `"cache_hit": false` and
+takes seconds; the second has `"cache_hit": true` and comes from the response
+cache (`cache.py`).
+
+| Route | What it does |
+|---|---|
+| `GET /health` | `{"status":"ok"}` if the service is awake |
+| `POST /ask` | `{"query": "...", "wardrobe": {...}}` (wardrobe optional). Returns the session as JSON, plus `cache_hit` and `timings_ms` |
+| `POST /cache/clear` | Empties the response cache. Needs the header `X-Admin-Token: <CACHE_ADMIN_TOKEN>`. Returns 404 if `CACHE_ADMIN_TOKEN` isn't set |
+
+**The first request after a quiet spell is slow.** The free tier puts the
+service to sleep after about 15 minutes with no requests. The next request
+wakes it, which takes up to a minute, and the cache starts empty again.
+
+### How it got there
+
+1. Render dashboard → **New → Web Service** → connect the GitHub repo
+   `linglinghappy/ai201-project2-fitfindr-starter-v2026`.
+2. Settings:
+
+   | Setting | Value |
+   |---|---|
+   | Branch | `main` |
+   | Root Directory | (empty) |
+   | Runtime | Python 3 |
+   | Build Command | `pip install -r requirements.txt` |
+   | Start Command | `gunicorn serve:app --timeout 120` |
+   | Instance Type | Free (512 MB) |
+
+3. Environment variables:
+
+   | Key | Value | Why |
+   |---|---|---|
+   | `GEMINI_API_KEY` | your key | the model calls |
+   | `AI201_CACHE` | `0` | turns off the old prompt cache in `generate.py`, so only the new response cache is measured |
+   | `CACHE_ADMIN_TOKEN` | any long random string | the password for `/cache/clear`. Make one with `python -c "import secrets; print(secrets.token_urlsafe(16))"` |
+   | `PYTHON_VERSION` | `3.13.5` | the version I tested with |
+
+   Render sets `PORT` itself; `gunicorn` reads it.
+
+4. **Deploy Web Service.** Every push to `main` deploys again.
+
+**Why `--timeout 120`:** gunicorn kills a request after 30 seconds by default.
+The free Gemini tier allows 15 model calls a minute, and a run that hits that
+limit waits for the next free slot. I measured one that waited 46 seconds.
+
+**Why the default worker, not `-k gevent`:** `mcp_client.call_tool` uses
+`asyncio.run()`, which fails inside an async worker. See "Running it somewhere
+else" below.
+
+### The logs
+
+Every `/ask` request writes one JSON record (see `serve.py::log_run`), to
+`logs/runs.jsonl` **and** to stdout. On Render, read them in the dashboard
+under **Logs**. The file on Render is wiped on every restart and every
+deploy, so the dashboard is the record there; on your own machine, the file is.
+
+### The environment
+
+| Thing | Value |
+|---|---|
+| Python | 3.13.5 (3.11–3.13 work; **not** 3.14) |
+| Packages | `requirements.txt` (bounded ranges). Tested with exactly: `Flask==3.1.3`, `google-genai==1.75.0`, `gunicorn==23.0.0`, `mcp==1.30.0`, `python-dotenv==1.1.1`. `measure_cost.py` also uses `requests==2.34.2`, which comes in with `google-genai` |
+| Model files | **None.** The model is `gemini-3.5-flash-lite`, called over the Gemini API. Nothing is downloaded |
+| Memory | Fits in Render's free 512 MB, because no model runs locally |
+| Secrets | `GEMINI_API_KEY` in `.env` locally (never committed), or in Render's environment variables |
+
+### Run the same service on your own machine
+
+```bash
+git clone https://github.com/linglinghappy/ai201-project2-fitfindr-starter-v2026.git
+cd ai201-project2-fitfindr-starter-v2026
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env            # then paste your GEMINI_API_KEY into .env
+python test.py                  # should end with 10 passed
+
+PORT=5050 AI201_CACHE=0 CACHE_ADMIN_TOKEN=pick-a-secret python serve.py
+```
+
+Then, in a second terminal:
+
+```bash
+curl -s -X POST http://localhost:5050/ask \
+  -H 'Content-Type: application/json' \
+  -d '{"query": "leather belt"}'
+```
+
+**Two things that caught me out:**
+
+- **On macOS, use port 5050, not 5000.** macOS's AirPlay Receiver listens on
+  port 5000 and answers with an empty `403` (`Server: AirTunes`), which looks
+  like a broken app. `curl ... | python -m json.tool` then fails with
+  `Expecting value: line 1 column 1`.
+- **Activate *this* project's `.venv`.** A terminal still holding another
+  project's environment fails `test.py` with "Could not import: google-genai,
+  mcp" and reports the key as empty, even though `.env` is fine. Check with
+  `which python`: the path should contain this project's folder.
+
+### Measure the cost of one run
+
+With the server running locally as above:
+
+```bash
+python measure_cost.py
+```
+
+It sends 10 different queries (so none are cache hits), reads their 10 log
+records back, averages tokens and time, and writes `results/cost_<date>.md`.
+
+---
+
 ## Before your first class
 
 Setup happens **before class**. The [environment setup page](../pages/ide_setup)
