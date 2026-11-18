@@ -908,3 +908,93 @@ is MCP starting a new Python process for every search on Render's small CPU.
 The two model calls are about 1.1 s and 0.8 s, the same as on my laptop. This
 changes the latency breakdown in What It Costs: on Render, the biggest cost
 of a miss is MCP, not the model. The cache skips both.
+
+**The Improvement**
+
+**What I changed:** one thing, in `generate.py::generate`. A Gemini **503
+UNAVAILABLE** is now retried with the same backoff as a 429 (wait 1, 2, 4, 8 s;
+5 tries in all) instead of failing the run on the first try. If it is still a
+503 on the last try, it fails exactly as before, with `ModelUnavailable`, so
+the agent still returns a message instead of crashing. Other errors, like a
+bad API key, are still not retried. Nothing else changed: same cache, same
+criteria, same queries, same test script.
+
+**Why:** it's aimed at the one thing my diagnosis found. Both misses (C1 and
+C3) came from one run in which Gemini answered 503, "This model is currently
+experiencing high demand. Spikes in demand are usually temporary." The code
+retried only rate limits, so it gave up immediately; the run failed; the cache
+correctly didn't save the failure; and the second send was a real miss.
+
+**Before and after**, three trials each on the deployed service, the same
+format:
+
+| Criterion | Target | Before: Run 1 | Run 2 | Run 3 | Verdict | After: Run 1 | Run 2 | Run 3 | Verdict |
+|---|---|---|---|---|---|---|---|---|---|
+| C1. A cache hit doesn't call the model | 5 of 5 | 5/5 | **4/5** | 5/5 | **MISSED** | 5/5 | 5/5 | 5/5 | MET |
+| C2. A cache hit is fast (median `duration_ms`) | ≤ 50 ms | 1 ms | 0.5 ms | 1 ms | MET | 1 ms | 1 ms | 1 ms | MET |
+| C3. A cache hit returns the same answer | 5 of 5 | 5/5 | **4/5** | 5/5 | **MISSED** | 5/5 | 5/5 | 5/5 | MET |
+| C4. A failed run is never saved | 3 of 3 | 3/3 | 3/3 | 3/3 | MET | 3/3 | 3/3 | 3/3 | MET |
+| C5. Every request leaves exactly one log record | 100% | 18/18 | 18/18 | 18/18 | MET | 18/18 | 18/18 | 18/18 | MET |
+
+Files: before
+[`results/capstone_2026-11-17_0104_before.md`](results/capstone_2026-11-17_0104_before.md),
+after
+[`results/capstone_2026-11-17_2151_after.md`](results/capstone_2026-11-17_2151_after.md)
+(each with a `.json` holding every response and log record). Both produced by
+`run_capstone.py::main`.
+
+**Did it help? All five are MET after, but the after run alone doesn't prove
+the fix did it.** In the after run **no 503 happened at all**. Every uncached
+run made exactly 2 model calls (a retried call would show 3 or more, because
+`model_calls` counts every try):
+
+| After run | `model_calls` per uncached run | Model errors |
+|---|---|---|
+| Run 1 | 2, 2, 2, 2, 2 | none |
+| Run 2 | 2, 2, 2, 2, 2 | none |
+| Run 3 | 2, 2, 2, 2, 2 | none |
+
+So the C1 and C3 misses went away partly because Gemini wasn't busy this
+time. A 503 is random; one test run can't make one happen.
+
+To check the fix itself, I wrote `test_retry_503.py`. It swaps the Gemini
+client in `generate.py` for a fake one that fails on purpose, and checks three
+cases. I ran it on the new `generate.py` and on the one from before the
+change (`git show 0f2eac1~1:generate.py`):
+
+| Case | Old `generate.py` | New `generate.py` |
+|---|---|---|
+| One 503, then success | **ModelUnavailable after 1 try** (what happened in run 2) | **succeeds on the 2nd try** |
+| 503 every time | ModelUnavailable after 1 try | ModelUnavailable after 5 tries (fails the same way, later) |
+| Bad API key | ModelUnavailable after 1 try | ModelUnavailable after 1 try (not retried) |
+| | **1 of 3 passed** | **3 of 3 passed** |
+
+Output of `python test_retry_503.py` on the new code:
+
+```
+[PASS] one 503, then success: retried, and the run succeeds
+       got ('ok', 2), expected ('ok', 2)
+[PASS] 503 every time: gives up after 5 tries, the same way as before (ModelUnavailable)
+       got ('ModelUnavailable', 5), expected ('ModelUnavailable', 5)
+[PASS] a bad API key: not retried, fails on the first try
+       got ('ModelUnavailable', 1), expected ('ModelUnavailable', 1)
+
+3 of 3 passed
+```
+
+So: the exact failure from run 2 (one 503, then the service is fine) now
+recovers instead of failing, and the after run shows the change didn't break
+anything else. What I can't show is how often it matters on the real service,
+because I only saw one 503 in about 60 model calls across both runs.
+
+**The cost of the change:** when Gemini is really down, a request now waits up
+to about 15 s (1 + 2 + 4 + 8) before it fails, instead of failing at once.
+That fits inside gunicorn's 120 s timeout, but it's 15 s of waiting for an
+answer that is still an error.
+
+**A deployment lesson from the after run:** my first try at the after run
+crashed with a `JSONDecodeError`. I'd started it while Render was still
+switching over: the requests went to the **old** instance (without the fix),
+which was shut down (`Handling signal: term`) halfway through a request. No
+results were written. I waited for "Your service is live" and the old
+instance to stop, then ran it again. That's the run above.
