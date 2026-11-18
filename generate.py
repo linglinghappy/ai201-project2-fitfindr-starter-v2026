@@ -328,11 +328,18 @@ def generate(
                 or "resource" in message and "exhaust" in message
                 or "rate" in message and "limit" in message
             )
+            # Capstone improvement: a 503 ("This model is currently
+            # experiencing high demand ... usually temporary") is retried with
+            # the same backoff as a 429, instead of failing the run on the
+            # first try. If it is still 503 on the last attempt, it fails the
+            # same way as before: ModelUnavailable, not a crash.
+            temporarily_unavailable = "503" in message or "unavailable" in message
             if not rate_limited:
-                raise ModelUnavailable(_explain(exc)) from exc
+                if not temporarily_unavailable or attempt == config.MAX_RETRIES - 1:
+                    raise ModelUnavailable(_explain(exc)) from exc
             backoff = _retry_delay(exc, attempt)
             print(
-                f"  [rate limit] service pushed back. Waiting {backoff:.0f}s "
+                f"  [{'rate limit' if rate_limited else '503'}] service pushed back. Waiting {backoff:.0f}s "
                 f"(attempt {attempt + 1} of {config.MAX_RETRIES}). This is "
                 f"the limiter doing its job, not a bug.",
                 file=sys.stderr,
