@@ -764,19 +764,29 @@ A cache hit costs **0 tokens, 0 model calls, and about 1 ms** on the server
 *Money:* I'm on Gemini's free tier, so the actual spend is **$0**. The real
 limits are the 15-calls-a-minute rate and the free daily allowance.
 
-*A hundred runs a day:*
+*Checked again on Render:* the 30 uncached runs that succeeded in the test
+runs (before and after) averaged **588.4 tokens** (422.5 in + 166.0 out), 2
+model calls each. That is within 2% of the laptop number, as it should be:
+the same prompts go to the same model. The 29 cache hits on Render took 0–4 ms
+and 0 tokens.
+
+*A hundred people a day:* running this for a hundred people a day would use
+**at most 100 × 575.5 = 57,550 tokens (100 × 414.1 = 41,410 in, plus 100 ×
+161.4 = 16,140 out) and 100 × 2 = 200 model calls**, which costs **$0** on the
+free Gemini tier and Render's free instance, and the cache can only lower it.
 
 | | Tokens a day | Model calls a day |
 |---|---|---|
-| No cache (every run a miss) | 100 × 575.5 = **57,550** (41,410 in + 16,140 out) | 200 |
+| No cache (every run a miss) | 100 × 575.5 = **57,550** | 100 × 2 = **200** |
 | With the cache, at hit rate *h* | 57,550 × (1 − *h*) | 200 × (1 − *h*) |
-| e.g. *h* = 30% | 40,285 | 140 |
 
-The hit rate is a guess until it's measured. I'll fill in a measured one from
-the test runs, not an estimate. One more limit matters more than the total: if
-the 100 runs come in bursts, any minute with more than about 7 uncached runs
-makes people wait. The cache helps there too, because repeated questions don't
-use model calls.
+I can't give a real hit rate. My test runs hit the cache on 5 of every 10
+fit-card requests (50%), but only because the test sends each query twice. I
+don't have real users, so I report the no-cache number as the cost and treat
+the cache as a saving on top. One more limit matters more than the daily
+total: if the 100 runs come in bursts, any minute with more than about 7
+uncached runs goes over the 15-calls-a-minute limit and makes people wait. The
+cache helps there too, because a repeated question uses no model calls.
 
 **Latency breakdown (stretch).** Where the time goes in one uncached run,
 averaged over the 9 runs that didn't wait for the rate limit:
@@ -998,3 +1008,66 @@ switching over: the requests went to the **old** instance (without the fix),
 which was shut down (`Handling signal: term`) halfway through a request. No
 results were written. I waited for "Your service is live" and the old
 instance to stop, then ran it again. That's the run above.
+
+**What's Still Broken**
+
+All five criteria are MET after the improvement, so nothing is still missed.
+That doesn't mean nothing is broken. My targets were partly too safe, and the
+runs showed problems the criteria didn't measure.
+
+*The target I set too low: C2.* I wrote "median hit ≤ 50 ms" before I had
+timed a single hit, to leave room for Render's slower machine. On Render, the
+29 hits across both runs took **0–4 ms** (median 1 ms). A target 50 times the
+real number can't fail, so it doesn't test anything. **I'd tighten it to: the
+median hit is ≤ 5 ms, and no single hit is over 10 ms, in every trial.** That
+still leaves room over the 4 ms worst case, but a hit that started copying or
+writing much more would now fail it.
+
+*The thing a stranger would find that my criteria don't check: a wrong
+answer from the cache.* While writing the criteria I dropped one ("a different
+query or wardrobe never gets someone else's cached answer"). The self-check
+showed it was the most dangerous cache bug and the one nothing tests. It's
+why "Would I be comfortable if a stranger tested my system" got a no. I'd add
+it as a criterion: 4 pairs of requests that differ only in wardrobe, price or
+size never hit each other's entry, and 2 that differ only in case or spaces
+do. I didn't add it this unit because the criteria were committed before the
+results, and adding one afterwards would break that order.
+
+*Problems the runs showed:*
+
+- **The 503 fix is proven by a test, not by the live service.** The after
+  run had no 503 to retry. *What I'd do:* log the number of retries per
+  request as its own field (now it is only visible as `model_calls` above 2),
+  and watch the deployed log over a few days. *Why I stopped:* a 503 is
+  random; I can't make Gemini busy on demand.
+- **The error message for a 503 is wrong.** It tells the user to "Check
+  GEMINI_API_KEY in your .env", which is wrong for a 503 and for anyone using
+  the hosted service. *What I'd do:* say "the model is busy, try again in a
+  minute" for a 503, in `agent.py`. *Why I stopped:* one change per run, and
+  I used it on the retry.
+- **An uncached run on Render takes about 6 s, and about 4.4 s of that is the
+  MCP search** (median over 30 runs; 0.4 s on my laptop). MCP starts a new
+  Python process for every search, and Render's free CPU is slow at that. The
+  two model calls are only about 0.9 s and 0.8 s. *Why I stopped:* it's
+  outside the cache, and my criteria don't measure miss time.
+- **The cache lives in memory.** Every deploy, restart or wake from sleep
+  empties it. *Why I stopped:* keeping it would need a store outside the
+  process (out of scope: no Redis).
+- **The cache repeats a wrong search pick.** "black combat boots" still picks
+  the flannel shirt, and the cache now serves that for 10 minutes. *Why I
+  stopped:* fixing search was out of scope from Milestone 1.
+- **Render's log starts each deploy with the records committed in git**, not
+  empty, because `logs/runs.jsonl` is in the repo. The tests only count
+  records added after they start, so scoring isn't affected, but the server's
+  log mixes laptop and server records. *What I'd do:* write the server's log
+  to a different file from the committed one.
+- **Testing during a deploy fails.** My first after run hit the old instance
+  while Render was shutting it down. *What I'd do:* have `run_capstone.py`
+  check which version is running (for example a commit id in `/health`)
+  before it starts.
+
+**What I'd do next, with another unit:** I'd stop starting a new MCP process
+for every search, and keep one MCP server running for the life of the service.
+On Render that process start is about 4.4 s of a 6 s miss, more than both
+model calls together, so it is the biggest thing between a user and an
+answer the cache hasn't seen yet.
