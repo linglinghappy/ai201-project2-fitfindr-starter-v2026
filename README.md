@@ -1071,3 +1071,41 @@ for every search, and keep one MCP server running for the life of the service.
 On Render that process start is about 4.4 s of a 6 s miss, more than both
 model calls together, so it is the biggest thing between a user and an
 answer the cache hasn't seen yet.
+
+**How I Used AI**
+
+I used Claude (Claude Code in VS Code) through the whole capstone. It wrote
+most of the code and drafted most of this write-up, and I reviewed it,
+committed it myself, and made the decisions. Two moments where what it gave
+me changed what I did:
+
+*Moment 1: planning the cache.*
+- *What I asked:* I had never learned caching, so I asked it to teach me
+  caching and help me plan a cache extension for FitFindr.
+- *What came back:* before teaching it, it read the code and told me
+  FitFindr **already had a cache**: `generate.py` saves each model prompt's
+  answer to `.cache/`, and the course turns it off for evaluation runs. So
+  "add a cache" on its own wasn't an extension.
+- *What I changed:* I kept the cache idea but changed what it is: a
+  **response cache in front of `/ask`** that saves the whole finished
+  session and skips parsing, the MCP search and both model calls, with a
+  TTL, a size limit, no saved failures and a `cache_hit` flag. I wrote the
+  difference into What This Extends as a table. I also decided to turn the
+  old cache off (`AI201_CACHE=0`) for every capstone run and on Render,
+  because with both on I couldn't tell which cache made a run fast.
+
+*Moment 2: testing my own RUNNING.md from a clean clone.*
+- *What I asked:* to walk me through cloning my repo into a new folder and
+  following RUNNING.md, as Milestone 3 asks.
+- *What came back:* before I started, it checked my machine and warned
+  that `python3` outside a virtual environment is **Python 3.15.2**, which
+  the packages don't support, so `python3 -m venv .venv` would probably
+  build the wrong environment.
+- *What I changed:* I followed RUNNING.md exactly as written anyway, so I'd
+  see what a reader would see. It did fail: `test.py` said
+  `[FAIL] Python version — Found 3.15.2`. Then the request printed
+  nothing, because I had stopped the server by typing `curl` into its
+  terminal. I rebuilt the venv with `python3.13`, ran the server and `curl`
+  in two terminals, and it worked. Then I added both fixes to RUNNING.md
+  (check `python3 --version` first; use two terminals) and wrote down what
+  went wrong, so the next reader doesn't hit them.
